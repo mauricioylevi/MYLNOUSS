@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Mylnouss Core" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Mylnouss Core">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="dashboard-body">
+    
+
+    <!-- Top Navigation -->
+        <nav class="app-navbar">
+            <div class="navbar-brand">
+                <span style="color: var(--color-primary); font-size: 1.4rem;">🍃</span>
+                MYLNOUSS
+            </div>
+            <div class="navbar-actions">
+                <a href="/public/site" target="_blank" class="btn btn-outline" style="border-radius: 50px; font-size: 0.85rem; padding: 0.35rem 1rem; text-decoration: none; display: inline-flex; align-items: center;">View Live Site &nearr;</a>
+                <div class="avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">AD</div>
+            </div>
+        </nav>
+
+    <div class="app-shell">
+            <!-- Left Sidebar -->
+            <aside class="app-sidebar">
+                
+                <!-- System Setup Block -->
+                <div class="sidebar-block">
+                    <div class="sidebar-block-title">
+                        <span>⚙️</span> System Setup
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li>
+                            <a href="#" class="sidebar-link active" onclick="openProfileQuestionnaire(event)">
+                                <span>👥</span> User Profiles
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/photos" class="sidebar-link">
+                                <span>📸</span> Post Photos
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="sidebar-link">
+                                <span>🔒</span> Access Control
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="sidebar-link">
+                                <span>💳</span> Subscription
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Features Block -->
+                <div class="sidebar-block">
+                    <div class="sidebar-block-title">
+                        <span>🧩</span> Core Modules
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li>
+                            <a href="#" class="sidebar-link">
+                                <span>🎮</span> Module Launcher
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="sidebar-link">
+                                <span>📓</span> Active Journals
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Play Block -->
+                <div class="sidebar-block">
+                    <div class="sidebar-block-title">
+                        <span>🎲</span> Play
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li>
+                            <a href="#" class="sidebar-link" onclick="toggleSidebarDropdown(event, 'games-dropdown', 'games-arrow')">
+                                <span>🧩</span> Enjoy Games
+                                <span class="dropdown-arrow" id="games-arrow">▼</span>
+                            </a>
+                            <div class="sidebar-dropdown" id="games-dropdown">
+                                <a href="/games/gallery" class="sidebar-dropdown-link">Photo Gallery</a>
+                                <a href="/games/photo_memory" class="sidebar-dropdown-link">Photo Memory</a>
+                                <a href="/games/career_quiz" class="sidebar-dropdown-link">Career Quiz</a>
+                                <a href="#" class="sidebar-dropdown-link" onclick="openProfileQuizModal(event)">Picturez Quiz</a>
+                                <a href="#" class="sidebar-dropdown-link" onclick="openPhotoMemoryModal(event)">Photo Memory</a>
+                                <a href="#" class="sidebar-dropdown-link" onclick="openCardsMatchModal(event)">Cards Match</a>
+                                <a href="/games/crossword" class="sidebar-dropdown-link">Crossword</a>
+                                <a href="/games/missing_word" class="sidebar-dropdown-link">Missing Word</a>
+                                <a href="/games/tic_tac_toe" class="sidebar-dropdown-link">Tic-Tac-Toe</a>
+                                <a href="/games/word_search" class="sidebar-dropdown-link">Word Search</a>
+                                <a href="/games/create_a_story" class="sidebar-dropdown-link">Create a Story</a>
+                                <a href="/games/photo_trivia" class="sidebar-dropdown-link">Photo Trivia</a>
+                                <a href="/games/critical_thinking" class="sidebar-dropdown-link">Critical Thinking</a>
+                                <a href="/games/lets_talk" class="sidebar-dropdown-link">Let's Talk</a>
+                                <a href="#" class="sidebar-dropdown-link">Daily Sudoku</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Footer Profile -->
+                <div class="sidebar-footer">
+                    Active Session:<br>
+                    <strong>admin@mylnouss.local</strong>
+                    <span class="sidebar-role-badge">Super Admin</span>
+                </div>
+            </aside>
+
+            <!-- Center Content Area -->
+            
+          <%= yield %>
+
+
+        <!-- Premium Dark Footer -->
+
+    </div>
+
+    <% @main_user = MainUser.first %>
+    <script id="backend-profile-data" type="application/json">
+        <%= raw(@main_user&.profile_data&.to_json || '{}') %>
+    </script>
+    
+    <!-- User Profile Questionnaire Modal -->
+    <div class="modal-overlay" id="questionnaire-modal" style="z-index: 10000;">
+        <div class="questionnaire-modal">
+            
+            <div class="modal-header">
+                <div class="modal-title" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <button onclick="closeProfileQuestionnaire()" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--color-text-muted); padding: 0; display: flex; align-items: center; transition: color 0.2s;" onmouseover="this.style.color='var(--color-text-main)'" onmouseout="this.style.color='var(--color-text-muted)'" title="Back to Dashboard">
+                            &larr;
+                        </button>
+                        <span>📋 Onboarding Main User Profile</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <button type="button" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.85rem; border-radius: 50px;" onclick="handleGlobalSave()">Save Profile</button>
+                        <button class="close-modal-btn" onclick="closeProfileQuestionnaire()">&times;</button>
+                    </div>
+                </div>
+                <div style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--color-text-muted);">
+                    <span id="completion-status">Step <span id="current-step-num">1</span> of 7</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                </div>
+            </div>
+
+            <div class="modal-body" id="questionnaire-body">
+                
+                <!-- STEP 1: Basic Information -->
+                <div class="questionnaire-step active" id="step-1">
+                    <h3 class="step-title">1. Basic Information</h3>
+                    <p class="step-subtitle">Please verify or update the main user's basic personal details.</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <label class="input-label">First Name <span class="input-required">(Required)</span></label>
+                            <input type="text" id="prof_first_name" class="text-input required-field" placeholder="e.g. John">
+                        </div>
+                        <div>
+                            <label class="input-label">Middle Name <span class="input-optional">(Optional)</span></label>
+                            <input type="text" id="prof_middle_name" class="text-input">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <label class="input-label">Last Name <span class="input-required">(Required)</span></label>
+                            <input type="text" id="prof_last_name" class="text-input required-field" placeholder="e.g. Doe">
+                        </div>
+                        <div>
+                            <label class="input-label">Date of Birth <span class="input-required">(Required)</span></label>
+                            <input type="date" id="prof_dob" class="text-input required-field">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Demographics -->
+                <div class="questionnaire-step" id="step-2">
+                    <h3 class="step-title">2. Basic Demographics</h3>
+                    <p class="step-subtitle">Let's collect some basic personal facts to tailor the experience.</p>
+                    
+                    <div style="margin-bottom: 1.75rem;">
+                        <label class="input-label">Main User's Sex <span class="input-required">(Required)</span></label>
+                        <div class="selection-grid required-group">
+                            <label class="selection-card"><input type="radio" name="sex" value="Male"><span>Male</span></label>
+                            <label class="selection-card"><input type="radio" name="sex" value="Female"><span>Female</span></label>
+                            <label class="selection-card"><input type="radio" name="sex" value="Other"><span>Other</span></label>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.75rem;">
+                        <label class="input-label">Marital Status <span class="input-required">(Required)</span></label>
+                        <div class="selection-grid required-group">
+                            <label class="selection-card"><input type="radio" name="marital" value="Married"><span>Married</span></label>
+                            <label class="selection-card"><input type="radio" name="marital" value="Single"><span>Single</span></label>
+                            <label class="selection-card"><input type="radio" name="marital" value="Widowed"><span>Widowed</span></label>
+                            <label class="selection-card"><input type="radio" name="marital" value="Divorced"><span>Divorced</span></label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="input-label">Current Living Arrangement <span class="input-required">(Required)</span></label>
+                        <div class="selection-grid required-group">
+                            <label class="selection-card"><input type="radio" name="living" value="Own home"><span>Own home</span></label>
+                            <label class="selection-card"><input type="radio" name="living" value="With family"><span>With family</span></label>
+                            <label class="selection-card"><input type="radio" name="living" value="Assisted living"><span>Assisted living</span></label>
+                            <label class="selection-card"><input type="radio" name="living" value="Nursing facility"><span>Nursing facility</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Support System -->
+                <div class="questionnaire-step" id="step-3">
+                    <h3 class="step-title">3. Daily Support System</h3>
+                    <p class="step-subtitle">Who assists the patient with their daily care routines?</p>
+                    
+                    <div>
+                        <label class="input-label">Main support comes from <span class="input-required">(Required - select at least 1)</span></label>
+                        <div class="selection-grid required-group">
+                            <label class="selection-card"><input type="checkbox" name="support"><span>Spouse</span></label>
+                            <label class="selection-card"><input type="checkbox" name="support"><span>Family</span></label>
+                            <label class="selection-card"><input type="checkbox" name="support"><span>Children</span></label>
+                            <label class="selection-card"><input type="checkbox" name="support"><span>Guest</span></label>
+                            <label class="selection-card"><input type="checkbox" name="support"><span>Friends</span></label>
+                            <label class="selection-card"><input type="checkbox" name="support"><span>Alone</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Hobbies & Pets -->
+                <div class="questionnaire-step" id="step-4">
+                    <h3 class="step-title">4. Hobbies & Pets</h3>
+                    <p class="step-subtitle">Let's learn about their personal hobbies and pet companions.</p>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <label class="input-label">Areas of Interest <span class="input-required">(Required - select at least 1)</span></label>
+                        <div class="selection-grid required-group">
+                            <label class="selection-card"><input type="checkbox" name="interest"><span>Music</span></label>
+                            <label class="selection-card"><input type="checkbox" name="interest"><span>Sports</span></label>
+                            <label class="selection-card"><input type="checkbox" name="interest"><span>Cooking</span></label>
+                            <label class="selection-card"><input type="checkbox" name="interest"><span>Gardening</span></label>
+                            <label class="selection-card"><input type="checkbox" name="interest"><span>Travel</span></label>
+                            <label class="selection-card"><input type="checkbox" name="interest"><span>Reading</span></label>
+                            <label class="selection-card"><input type="checkbox" name="interest"><span>Movies</span></label>
+                            <label class="selection-card"><input type="checkbox" name="interest"><span>Art</span></label>
+                            <label class="selection-card"><input type="checkbox" name="interest"><span>History</span></label>
+                            <label class="selection-card"><input type="checkbox" name="interest"><span>Animals</span></label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="input-label">Animals & Pets <span class="input-optional">(Optional)</span></label>
+                        <input type="text" id="prof_pets" class="text-input" placeholder="e.g. Fido (Dog), Whiskers (Cat), Loves horses">
+                    </div>
+                </div>
+
+                <!-- STEP 5: Career & Languages -->
+                <div class="questionnaire-step" id="step-5">
+                    <h3 class="step-title">5. Career & Professional Life</h3>
+                    <p class="step-subtitle">Information regarding their professional background and communication skills.</p>
+                    
+                    <div style="margin-bottom: 1.75rem;">
+                        <label class="input-label">Broad Career Field <span class="input-required">(Required)</span></label>
+                        <select id="prof_career" class="text-input required-field">
+                            <option value="">Select a general category...</option>
+                            <option value="Healthcare & Medical">Healthcare & Medical</option>
+                            <option value="Business & Finance">Business & Finance</option>
+                            <option value="Education & Teaching">Education & Teaching</option>
+                            <option value="Engineering & Technology">Engineering & Technology</option>
+                            <option value="Arts & Design">Arts & Design</option>
+                            <option value="Sales & Marketing">Sales & Marketing</option>
+                            <option value="Legal & Public Service">Legal & Public Service</option>
+                            <option value="Skilled Trades & Construction">Skilled Trades & Construction</option>
+                            <option value="Science & Research">Science & Research</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.75rem;">
+                        <label class="input-label">Professional Experience & Career History <span class="input-optional">(Optional)</span></label>
+                        <textarea id="prof_experience" class="text-input" rows="3" style="resize: vertical;" placeholder="Describe their past occupation, responsibilities, or memorable achievements..."></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="input-label">Languages (max 3) <span class="input-optional">(Optional)</span></label>
+                        <input type="text" id="prof_languages" class="text-input" placeholder="e.g. English, Spanish, French">
+                    </div>
+                </div>
+
+                <!-- STEP 6: Health & Lifestyle -->
+                <div class="questionnaire-step" id="step-6">
+                    <h3 class="step-title">6. Health & Physical Activities</h3>
+                    <p class="step-subtitle">Exercise routines help target physical wellness stimulation.</p>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <label class="input-label">Physical Exercise Level <span class="input-required">(Required)</span></label>
+                        <div class="selection-grid required-group">
+                            <label class="selection-card"><input type="radio" name="exercise" value="Intense"><span>Intense</span></label>
+                            <label class="selection-card"><input type="radio" name="exercise" value="Regular"><span>Regular</span></label>
+                            <label class="selection-card"><input type="radio" name="exercise" value="None"><span>None</span></label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="input-label">Main Type of Exercise <span class="input-optional">(Optional)</span></label>
+                        <input type="text" id="prof_exercise_type" class="text-input" placeholder="e.g. Walking, Swimming, Yoga">
+                    </div>
+                </div>
+
+                <!-- STEP 7: Life & Interests Description -->
+                <div class="questionnaire-step" id="step-7">
+                    <h3 class="step-title">7. Life & Interests Summary <span class="input-optional">(Optional)</span></h3>
+                    <p class="step-subtitle" style="margin-bottom: 1rem;">Provide a short, rich narrative of their life history, favorite memories, personality traits, and deep-seated interests.</p>
+                    
+                    <div style="background-color: var(--color-bg-secondary); border: 1px solid var(--color-border); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+                        <strong style="font-size: 0.85rem; color: var(--color-primary-hover); text-transform: uppercase; display: block; margin-bottom: 0.5rem; letter-spacing: 0.5px;">💡 Suggested things to write about:</strong>
+                        <ul style="margin: 0; padding-left: 1.2rem; color: var(--color-text-muted); font-size: 0.9rem; line-height: 1.5;">
+                            <li>Where did the Patient grow up, and what are their favorite childhood memories?</li>
+                            <li>What did they do for a career or occupation?</li>
+                            <li>What are their main hobbies, favorite music, foods, or daily passions?</li>
+                            <li>What are some key personality traits or life milestones they are most proud of?</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <label class="input-label">Short Life Description</label>
+                        <textarea id="prof_life_desc" class="text-input" rows="5" style="resize: vertical;" placeholder="Type a rich description..."></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="prev-step-btn" style="border-radius: 50px; padding: 0.75rem 2rem;" onclick="handlePrevStep()">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="next-step-btn" style="border-radius: 50px; padding: 0.75rem 2.5rem;" onclick="changeQuestionnaireStep(1)">
+                    Next Step &rarr;
+                </button>
+            </div>
+            
+        </div>
+    </div>
+
+
+
+
+    <!-- Photo Lightbox Modal (TTS Viewer) -->
+    <div class="modal-overlay" id="photo-lightbox-modal" style="z-index: 9999; background: rgba(0, 0, 0, 0.9);">
+        <div style="position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem;">
+            <button class="close-modal-btn" onclick="closeLightbox()" style="position: absolute; top: 2rem; right: 2rem; color: white; background: rgba(255,255,255,0.1); border-radius: 50%; width: 48px; height: 48px; font-size: 2rem; border: none; cursor: pointer; transition: background 0.3s;">&times;</button>
+            <div style="max-width: 900px; width: 100%; max-height: 70vh; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem;">
+                <img id="lightbox-image" src="" alt="Photo Viewer" style="max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+            </div>
+            <div style="max-width: 800px; width: 100%; text-align: center;">
+                <div style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--color-primary); color: white; padding: 0.5rem 1.5rem; border-radius: 50px; font-weight: 600; font-size: 0.9rem; margin-bottom: 1rem; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4);">
+                    <span style="font-size: 1.2rem;">🔊</span> Reading Message...
+                </div>
+                <p id="lightbox-description" style="color: white; font-size: 1.5rem; line-height: 1.6; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Picturez Quiz Modal -->
+    <div class="modal-overlay" id="profile-quiz-modal" style="z-index: 9998; background: rgba(0, 0, 0, 0.7);">
+        <div class="modal-content" style="max-width: 800px; width: 95%; min-height: 600px; display: flex; flex-direction: column; background: var(--color-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+            <div class="modal-header" style="background: white; border-bottom: 1px solid var(--color-border); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0; font-size: 1.5rem; color: var(--color-text-main);">🎮 Picturez Quiz</h2>
+            </div>
+            <div class="modal-body" id="quiz-body" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; text-align: center;">
+                
+                <div id="quiz-loading-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                    <div style="font-size: 3rem; animation: spin 2s linear infinite;">⌛</div>
+                    <h3 style="margin-top: 1.5rem; color: var(--color-text-main);">Generating personalized AI game...</h3>
+                    <p style="color: var(--color-text-muted);">Crafting images based on your profile hobbies.</p>
+                </div>
+                
+                <div id="quiz-game-state" style="display: none; width: 100%; max-width: 600px; flex-direction: column; align-items: center;">
+                    <h3 id="quiz-progress" style="color: var(--color-primary); margin-bottom: 1.5rem; font-size: 1.2rem;">Round 1 of 5</h3>
+                    <img id="quiz-image" src="" style="width: 100%; max-height: 300px; object-fit: contain; border-radius: 12px; box-shadow: var(--shadow-md); margin-bottom: 2rem;">
+                    <div id="quiz-choices" style="display: grid; grid-template-columns: 1fr; gap: 1rem; width: 100%;">
+                        <!-- Buttons injected via JS -->
+                    </div>
+                </div>
+
+                <div id="quiz-end-state" style="display: none; width: 100%; text-align: center;">
+                    <div style="font-size: 5rem; margin-bottom: 1rem;">🏆</div>
+                    <h2 style="color: var(--color-text-main); margin-bottom: 0.5rem;">Game Complete!</h2>
+                    <p style="font-size: 1.2rem; color: var(--color-text-muted); margin-bottom: 2rem;">You successfully identified all 5 pictures!</p>
+                    <div style="display: flex; justify-content: center; gap: 1rem;">
+                        <button class="btn btn-outline" style="padding: 0.75rem 2rem; border-radius: 50px; font-size: 1.1rem;" onclick="closeProfileQuizModal(event)">Close</button>
+                        <button class="btn btn-primary" style="padding: 0.75rem 2rem; border-radius: 50px; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);" onclick="startProfileQuiz()">Play Again</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .quiz-btn {
+            background: white;
+            border: 2px solid var(--color-border);
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--color-text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .quiz-btn:hover:not(:disabled) {
+            border-color: var(--color-primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+        .quiz-btn.correct {
+            background: #e6f4ea !important;
+            border-color: #34a853 !important;
+            color: #137333 !important;
+        }
+        .quiz-btn.wrong {
+            background: #fce8e6 !important;
+            border-color: #ea4335 !important;
+            color: #c5221f !important;
+        }
+    </style>
+
+    <!-- Cards Match Modal -->
+    <div class="modal-overlay" id="cards-match-modal" style="z-index: 9998; background: rgba(0, 0, 0, 0.7);">
+        <div id="cards-match-modal-content" class="modal-content" style="max-width: 700px; width: 95%; min-height: 600px; display: flex; flex-direction: column; background: var(--color-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); transition: max-width 0.4s ease;">
+            
+            <div class="modal-header" style="background: white; border-bottom: 1px solid var(--color-border); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 style="font-size: 1.8rem; font-weight: 700; color: var(--color-text-main); margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 2rem;">🎴</span> Cards Match
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Game Screen -->
+            <div id="cards-match-game-screen" class="modal-body" style="padding: 2rem; flex-grow: 1; display: none; flex-direction: column; background: var(--color-bg); align-items: center;">
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    
+                    <div style="display: flex; gap: 0.5rem; background: var(--color-bg-secondary); padding: 0.25rem; border-radius: 8px; border: 1px solid var(--color-border);">
+                        <button id="cm-btn-easy" class="btn" onclick="startCardsMatch('easy')" style="padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600;">Easy</button>
+                        <button id="cm-btn-medium" class="btn btn-outline" onclick="startCardsMatch('medium')" style="padding: 0.5rem 1rem; border-radius: 6px; border: none; font-weight: 600;">Medium</button>
+                        <button id="cm-btn-hard" class="btn btn-outline" onclick="startCardsMatch('hard')" style="padding: 0.5rem 1rem; border-radius: 6px; border: none; font-weight: 600;">Hard</button>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span id="cards-match-stats" style="font-size: 1.2rem; font-weight: 600; color: var(--color-text-main);">Matches: 0 / 4</span>
+                        <button class="btn btn-outline" onclick="closeCardsMatchModal()" style="border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; padding: 0; color: #F44336; border-color: #F44336;" title="Close Game">✕</button>
+                    </div>
+                </div>
+                
+                <div id="cards-match-board" style="display: grid; gap: 1rem; width: 100%; max-width: 1000px; margin: 0 auto; perspective: 1000px;">
+                    <!-- Cards injected here via JS -->
+                </div>
+            </div>
+
+            <!-- Loading Screen -->
+            <div id="cards-match-loading-screen" class="modal-body" style="padding: 4rem 2rem; flex-grow: 1; display: none; flex-direction: column; align-items: center; justify-content: center; background: var(--color-bg); text-align: center;">
+                <span style="font-size: 4rem; display: block; margin-bottom: 1rem; animation: pulse 2s infinite;">⏳</span>
+                <h3 style="font-size: 1.5rem; color: var(--color-text-main); margin: 0 0 1rem 0;">Shuffling the Deck...</h3>
+                <p style="font-size: 1.1rem; color: var(--color-text-muted); max-width: 400px; margin: 0 auto;">
+                    We are gathering photos and setting up the board. This might take a few moments if the AI is drawing new pictures!
+                </p>
+            </div>
+
+            <!-- End Screen -->
+            <div id="cards-match-end-screen" class="modal-body" style="padding: 4rem 2rem; flex-grow: 1; display: none; flex-direction: column; align-items: center; justify-content: center; background: var(--color-bg); text-align: center;">
+                <span style="font-size: 5rem; display: block; margin-bottom: 1rem;">🎉</span>
+                <h3 style="font-size: 2.5rem; color: var(--color-text-main); margin: 0 0 1rem 0;">You Won!</h3>
+                <p id="cards-match-end-text" style="font-size: 1.2rem; color: var(--color-text-muted); margin: 0 0 2rem 0;">
+                    You successfully found all matching pairs!
+                </p>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-outline" onclick="startCardsMatch(window.cmState.currentDifficulty)">Play Again</button>
+                    <button class="btn btn-primary" onclick="closeCardsMatchModal()">Exit</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Photo Memory Modal -->
+    <div class="modal-overlay" id="photo-memory-modal" style="z-index: 9998; background: rgba(0, 0, 0, 0.7);">
+        <div class="modal-content" style="max-width: 800px; width: 95%; min-height: 600px; display: flex; flex-direction: column; background: var(--color-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+            <div class="modal-header" style="background: white; border-bottom: 1px solid var(--color-border); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0; font-size: 1.5rem; color: var(--color-text-main);">🧠 Photo Memory</h2>
+            </div>
+            
+            <div class="modal-body" id="pm-body" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; text-align: center;">
+                
+                <!-- Loading State -->
+                <div id="pm-loading-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                    <div style="font-size: 3rem; animation: spin 2s linear infinite;">⌛</div>
+                    <h3 style="margin-top: 1.5rem; color: var(--color-text-main);">Preparing your photo memory game...</h3>
+                    <p style="color: var(--color-text-muted);">AI is analyzing your photos to generate questions.</p>
+                </div>
+
+                <!-- Memory Phase -->
+                <div id="pm-memory-state" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 1rem;">
+                        <h3 id="pm-progress" style="color: var(--color-primary); margin: 0; font-size: 1.2rem;">Round 1 of 5</h3>
+                        <div style="background: #fce8e6; color: #c5221f; padding: 0.5rem 1rem; border-radius: 20px; font-weight: bold; font-size: 1.2rem;">
+                            ⏱ <span id="pm-timer">60</span>s
+                        </div>
+                    </div>
+                    <p style="color: var(--color-text-main); font-size: 1.2rem; margin-bottom: 1.5rem;">Memorize the details in this photo!</p>
+                    
+                    <img id="pm-image" src="" style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 12px; box-shadow: var(--shadow-md); margin-bottom: 2rem;">
+                    
+                    <button class="btn btn-primary" onclick="pmStartQuizPhase()" style="padding: 1rem 3rem; border-radius: 50px; font-size: 1.2rem; font-weight: 700;">I am ready!</button>
+                </div>
+                
+                <!-- Quiz Phase -->
+                <div id="pm-quiz-state" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+                    <h3 id="pm-quiz-progress" style="color: var(--color-primary); margin-bottom: 1.5rem; font-size: 1.2rem;">Round 1 of 5</h3>
+                    <h2 id="pm-question" style="color: var(--color-text-main); margin-bottom: 2rem; font-size: 1.8rem;"></h2>
+                    
+                    <div id="pm-choices" style="display: grid; grid-template-columns: 1fr; gap: 1rem; width: 100%; max-width: 600px;">
+                        <!-- Buttons injected via JS -->
+                    </div>
+                </div>
+
+                <!-- End State -->
+                <div id="pm-end-state" style="display: none; width: 100%; text-align: center;">
+                    <div style="font-size: 5rem; margin-bottom: 1rem;">🏆</div>
+                    <h2 style="color: var(--color-text-main); margin-bottom: 0.5rem;">Game Complete!</h2>
+                    <p id="pm-final-score" style="font-size: 1.5rem; color: var(--color-primary); font-weight: bold; margin-bottom: 2rem;">You got 5 out of 5 correct!</p>
+                    <div style="display: flex; justify-content: center; gap: 1rem;">
+                        <button class="btn btn-outline" style="padding: 0.75rem 2rem; border-radius: 50px; font-size: 1.1rem;" onclick="closePhotoMemoryModal(event)">Exit</button>
+                        <button class="btn btn-primary" style="padding: 0.75rem 2rem; border-radius: 50px; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);" onclick="startPhotoMemory()">Play Again</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

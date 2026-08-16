@@ -1,0 +1,71 @@
+<main class="app-content">
+  <div style="display: flex; flex-direction: column; height: 100%; background: var(--color-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+    
+    <!-- Header -->
+    <div style="padding: 1.5rem 2rem; border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; background: var(--color-surface);">
+        <div>
+            <h2 style="font-size: 1.8rem; font-weight: 700; color: var(--color-text-main); margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 2rem;">💬</span> Let's Talk
+            </h2>
+            <p style="color: var(--color-text-muted); margin: 0.25rem 0 0 0; font-size: 0.95rem;">Conversations about you</p>
+        </div>
+        <div>
+            <a href="/" class="btn btn-outline" style="border-radius: 50px; padding: 0.4rem 1rem; font-size: 0.9rem;">&larr; Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Game Container -->
+    <div style="flex: 1; padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow-y: auto;">
+        
+        <% if @game_data.nil? || @game_data['prompts'].empty? %>
+            <div style="text-align: center;">
+                <div style="font-size: 2.5rem; animation: pulse 1.5s infinite;">⏳</div>
+                <h3 style="color: var(--color-text-main); margin-top: 1rem;">Generating topics...</h3>
+                <p style="color: var(--color-text-muted);">Please refresh the page in a few seconds.</p>
+            </div>
+        <% else %>
+            <div id="lt-container" data-prompts="<%= @game_data['prompts'].to_json %>" style="width: 100%; max-width: 700px; display: flex; flex-direction: column; align-items: center;">
+                
+                <div id="lt-round-indicator" style="font-size: 1rem; font-weight: 600; color: var(--color-text-muted); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1px;">Topic 1 / 3</div>
+                
+                <!-- Prompt Box -->
+                <div style="width: 100%; background: var(--color-surface); padding: 3rem 2rem; border-radius: 16px; margin-bottom: 3rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--color-border); text-align: center;">
+                    <h3 id="lt-prompt-text" style="font-size: 1.8rem; font-weight: 400; color: var(--color-text-main); margin: 0; line-height: 1.6; font-style: italic;">
+                        "Loading..."
+                    </h3>
+                </div>
+                
+                <!-- Controls -->
+                <div style="display: flex; gap: 1rem; width: 100%; justify-content: center;">
+                    <button class="btn btn-primary" onclick="nextLetsTalkPrompt()" style="padding: 1rem 3rem; border-radius: 50px; font-size: 1.1rem; font-weight: 600; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);">
+                        Next Topic &rarr;
+                    </button>
+                </div>
+                
+            </div>
+
+            <!-- End Screen -->
+            <div id="lt-end-screen" style="display: none; text-align: center; flex-direction: column; align-items: center;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">☕</div>
+                <h2 style="font-size: 2.2rem; color: var(--color-text-main); margin-bottom: 1rem;">Great Conversation!</h2>
+                <p style="font-size: 1.2rem; color: var(--color-text-muted); margin-bottom: 2rem;">It was lovely hearing about your memories.</p>
+                <div style="display: flex; gap: 1rem;">
+                    <a href="/" class="btn btn-primary" style="padding: 0.75rem 2rem; border-radius: 50px; font-size: 1.1rem;">Return to Dashboard</a>
+                </div>
+            </div>
+        <% end %>
+
+    </div>
+  </div>
+</main>
+
+<script>
+    function tryInitLetsTalk() {
+        if (typeof initLetsTalkPage === 'function') {
+            initLetsTalkPage();
+        } else {
+            setTimeout(tryInitLetsTalk, 100);
+        }
+    }
+    tryInitLetsTalk();
+</script>

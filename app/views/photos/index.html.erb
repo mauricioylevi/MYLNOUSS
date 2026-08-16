@@ -1,0 +1,68 @@
+<main class="app-content">
+    <div style="max-width: 1200px; margin: 0 auto; background: var(--color-bg); border-radius: 16px;">
+        
+        <div style="border-bottom: none; padding-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 1.5rem;">
+                <h1 style="margin: 0; font-size: 2.2rem; color: var(--color-text-main); font-weight: 900;">
+                    Your Photo Album <span style="font-weight: 400; color: var(--color-primary);">| My Main User</span>
+                </h1>
+                <a href="/" class="btn btn-outline" style="border-radius: 50px; padding: 0.35rem 1rem; font-size: 0.9rem; font-weight: 600;">&larr; Back</a>
+            </div>
+            <p style="color: var(--color-text-muted); font-size: 1.1rem; margin: 0; max-width: 950px; line-height: 1.6; font-weight: 500;">
+                Upload favorite photos and add a short description to each one. We will use these cherished memories to personalize daily activities and help exercise the mind.
+            </p>
+        </div>
+
+        <div style="padding-top: 2.5rem;">
+            <div style="display: grid; grid-template-columns: 1fr 2.2fr; gap: 3rem; align-items: start;">
+                <!-- Left Column: Upload Form -->
+                <div style="padding: 2rem; position: sticky; top: 0; background: var(--color-bg-secondary); border-radius: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--color-border);">
+                    <h3 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.4rem; color: var(--color-text-main); font-weight: 900;">Step 1: Upload Photos</h3>
+                    <p style="font-size: 0.95rem; color: var(--color-text-muted); margin-bottom: 2rem; line-height: 1.6; font-weight: 500;">
+                        Select one or more photos from your device. You can add the text later!
+                    </p>
+                    
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.75rem;">
+                            <label style="font-weight: 800; margin: 0; color: var(--color-text-main); font-size: 1.1rem;">Select Photos</label>
+                            <span style="font-size: 0.85rem; color: var(--color-primary); font-weight: 700;">1 / 25 uploaded</span>
+                        </div>
+                        <div style="border: 1px solid var(--color-border); border-radius: 8px; padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-outline" onclick="document.getElementById('imagesInput').click()" style="padding: 0.35rem 0.85rem; border-radius: 4px; font-size: 0.9rem; font-weight: 500; white-space: nowrap;">Choose Files</button>
+                            <span id="custom-file-name" style="font-size: 0.95rem; color: var(--color-text-muted); flex: 1; min-width: 100px;">No file chosen</span>
+                            <input type="file" id="imagesInput" multiple accept="image/*" style="display: none;" onchange="handleFileSelectChange()">
+                        </div>
+                        <div id="duplicate-warning-msg" style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--color-error); font-weight: 700; display: none; align-items: center; gap: 0.5rem;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            <span id="duplicate-warning-text"></span>
+                        </div>
+                    </div>
+                    <button id="uploadBtn" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem; font-weight: 700; border-radius: 8px; opacity: 0.5; cursor: not-allowed;" disabled onclick="processSelectedFiles()">Upload Photos</button>
+                </div>
+
+                <!-- Right Column: List -->
+                <div>
+                    <h3 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.8rem; color: var(--color-text-main); font-weight: 900;">Step 2: Add Details</h3>
+                    <div id="no-photos-msg" style="text-align: center; color: var(--color-text-muted); padding: 3rem; background: var(--color-bg-secondary); border-radius: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--color-border);">
+                        <p style="font-size: 1.25rem;">No photos uploaded yet.</p>
+                        <p>Use the form on the left to upload your first batch of photos.</p>
+                    </div>
+                    <div id="photo-items-wrapper" style="display: flex; flex-direction: column; gap: 2rem;">
+                        <!-- JS injected items go here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</main>
+
+<script>
+    if (typeof initPhotoPage === 'function') {
+        initPhotoPage();
+    } else {
+        setTimeout(() => {
+            if (typeof initPhotoPage === 'function') initPhotoPage();
+        }, 100);
+    }
+</script>

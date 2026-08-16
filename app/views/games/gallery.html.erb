@@ -1,0 +1,36 @@
+<main class="app-content">
+    
+    <div style="max-width: 1200px; margin: 0 auto; width: 100%;">
+        <div style="border-bottom: 1px solid var(--color-border); padding-bottom: 1.5rem; margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <h1 style="margin: 0; font-size: 2.2rem; color: var(--color-text-main); font-weight: 900;">
+                    My Photo Gallery
+                </h1>
+                <a href="/" class="btn btn-outline" style="border-radius: 50px; padding: 0.35rem 1rem; font-size: 0.9rem; font-weight: 600;">&larr; Back to Dashboard</a>
+            </div>
+        </div>
+
+        <div style="flex-grow: 1;">
+            <div id="gallery-items-wrapper" style="column-width: 220px; column-gap: 1.5rem;">
+                <!-- JS injected memory cards go here -->
+            </div>
+            
+            <div id="gallery-empty-msg" style="text-align: center; color: var(--color-text-muted); padding: 4rem; display: none;">
+                <span style="font-size: 4rem; display: block; margin-bottom: 1rem;">📷</span>
+                <h3 style="font-size: 1.5rem; margin: 0 0 0.5rem 0; color: var(--color-text-main);">No Photos Yet</h3>
+                <p style="font-size: 1.1rem; max-width: 400px; margin: 0 auto;">Ask the Administrator to upload some photos in the "Post Photos" tool!</p>
+            </div>
+        </div>
+    </div>
+    
+</main>
+
+<script>
+    if (typeof initGalleryPage === 'function') {
+        initGalleryPage();
+    } else {
+        setTimeout(() => {
+            if (typeof initGalleryPage === 'function') initGalleryPage();
+        }, 100);
+    }
+</script>

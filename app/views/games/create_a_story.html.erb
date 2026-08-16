@@ -1,0 +1,114 @@
+<main class="app-content">
+  <div style="display: flex; flex-direction: column; height: 100%; background: var(--color-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+    
+    <!-- Header -->
+    <div style="padding: 1.5rem 2rem; border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; background: var(--color-surface);">
+        <div>
+            <h2 style="font-size: 1.8rem; font-weight: 700; color: var(--color-text-main); margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 2rem;">📖</span> Create a Story
+            </h2>
+            <p style="color: var(--color-text-muted); margin: 0.25rem 0 0 0; font-size: 0.95rem;">Take turns writing sentences. The story is hidden until the end!</p>
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <div style="display: flex; background: var(--color-bg); border-radius: 50px; padding: 0.25rem; border: 1px solid var(--color-border); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+                <button id="mode-btn-computer" onclick="window.setStoryMode('computer')" style="padding: 0.4rem 1rem; border-radius: 50px; border: none; background: var(--color-primary); color: white; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;">🤖 vs Computer</button>
+                <button id="mode-btn-friend" onclick="window.setStoryMode('friend')" style="padding: 0.4rem 1rem; border-radius: 50px; border: none; background: transparent; color: var(--color-text-muted); font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;">👤 vs Friend</button>
+            </div>
+            <a href="/" class="btn btn-outline" style="border-radius: 50px; padding: 0.4rem 1rem; font-size: 0.9rem;">&larr; Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Game Container -->
+    <div style="flex: 1; padding: 2rem; display: flex; flex-direction: column; align-items: center; position: relative; overflow-y: auto;">
+        
+        <!-- Setup Screen -->
+        <div id="story-setup-screen" style="max-width: 600px; width: 100%; text-align: center;">
+            
+            <div id="story-prompts-loading" style="display: none; margin-top: 2rem; font-size: 2.5rem; animation: pulse 1.5s infinite;">⏳</div>
+            
+            <div id="story-prompts-container" style="display: none; margin-top: 2rem; text-align: left;">
+                <h4 style="color: var(--color-text-muted); margin-bottom: 1rem;">Choose a phrase to begin:</h4>
+                <div id="story-prompts-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <!-- Injected prompts -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Gameplay Screen -->
+        <div id="story-game-screen" style="display: none; max-width: 600px; width: 100%; flex-direction: column; align-items: center;">
+            <div id="story-turn-indicator" style="font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-bottom: 1rem; background: rgba(99, 102, 241, 0.1); padding: 0.5rem 1.5rem; border-radius: 50px;">
+                Your Turn
+            </div>
+            
+            <p style="color: var(--color-text-muted); margin-bottom: 1.5rem; text-align: center;">Write one short sentence to continue the story. Don't let the other player see!</p>
+            
+            <div id="story-computer-thinking" style="display: none; align-items: center; gap: 1rem; background: var(--color-surface); border: 1px solid var(--color-border); padding: 1.5rem; border-radius: 12px; width: 100%; justify-content: center; margin-bottom: 1.5rem;">
+                <span style="font-size: 1.5rem; animation: spin 2s linear infinite;">⌛</span>
+                <span style="font-size: 1.1rem; color: var(--color-text-main); font-weight: 600;">Computer is writing...</span>
+            </div>
+            
+            <div id="story-input-area" style="width: 100%; display: flex; flex-direction: column; gap: 1rem;">
+                <textarea id="story-input" class="text-input" rows="4" placeholder="Write your sentence here..." style="font-size: 1.1rem; padding: 1rem; resize: vertical; border-radius: 12px;"></textarea>
+                <button class="btn btn-primary" onclick="submitStoryTurn()" style="padding: 1rem; border-radius: 12px; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);">Submit & Pass</button>
+            </div>
+            
+            <hr style="width: 100%; border: none; border-top: 1px solid var(--color-border); margin: 2rem 0;">
+            
+            <button class="btn btn-outline" onclick="endStoryGame()" style="padding: 0.75rem 2rem; border-radius: 50px; font-size: 1rem; color: #DC2626; border-color: #fca5a5; background: #fef2f2;">End Game & Reveal Story</button>
+        </div>
+
+        <!-- Reveal Screen -->
+        <div id="story-reveal-screen" style="display: none; max-width: 800px; width: 100%; flex-direction: column; align-items: center; text-align: center;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🎭</div>
+            <h2 style="color: var(--color-text-main); font-size: 2.2rem; margin-bottom: 2rem;">The Masterpiece</h2>
+            
+            <div id="story-final-text" style="background: var(--color-surface); border: 1px solid var(--color-border); padding: 2rem; border-radius: 16px; font-size: 1.4rem; line-height: 1.8; color: var(--color-text-main); text-align: left; box-shadow: 0 4px 20px rgba(0,0,0,0.05); width: 100%; margin-bottom: 2rem; min-height: 200px;">
+                <!-- Final story injected here -->
+            </div>
+            
+            <div style="display: flex; gap: 1rem;">
+                <a href="/games/create_a_story" class="btn btn-primary" style="padding: 0.75rem 2rem; border-radius: 50px; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);">Play Again</a>
+                <a href="/" class="btn btn-outline" style="padding: 0.75rem 2rem; border-radius: 50px; font-size: 1.1rem; color: #DC2626; border-color: #fca5a5; background: #fef2f2;">Exit to Dashboard</a>
+            </div>
+        </div>
+
+    </div>
+  </div>
+</main>
+
+<style>
+.story-mode-btn {
+    transition: all 0.2s;
+    background: var(--color-surface);
+}
+.story-mode-btn.active {
+    border-color: var(--color-primary);
+    background: rgba(99, 102, 241, 0.05);
+    box-shadow: 0 0 0 2px var(--color-primary);
+}
+.story-prompt-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    color: var(--color-text-main);
+}
+.story-prompt-card:hover {
+    border-color: var(--color-primary);
+    background: rgba(99, 102, 241, 0.05);
+}
+</style>
+
+<script>
+    if (typeof initStoryGame === 'function') {
+        initStoryGame();
+    } else {
+        setTimeout(() => {
+            if (typeof initStoryGame === 'function') initStoryGame();
+        }, 100);
+    }
+</script>
