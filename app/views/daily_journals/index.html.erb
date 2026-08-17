@@ -1,0 +1,45 @@
+<main class="app-content">
+<div style="max-width: 700px; margin: 0 auto; padding: 2rem 1rem; width: 100%;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+      <h1 style="font-size: 2rem; font-weight: 800; color: var(--color-text-main); margin: 0;">Journal History</h1>
+      <p style="font-size: 1rem; color: var(--color-text-muted); margin: 0.25rem 0 0 0;">
+        Review your past entries by day.
+      </p>
+    </div>
+    <div>
+      <a href="<%= today_daily_journals_path %>" class="btn btn-primary" style="border-radius: 50px; font-weight: 600; padding: 0.5rem 1.25rem; font-size: 0.9rem;">
+        Write Today's Journal
+      </a>
+    </div>
+  </div>
+
+  <% if @journal_stats.empty? %>
+    <div style="text-align: center; padding: 3rem; background: var(--color-surface); border-radius: 12px; border: 1px dashed #cbd5e1;">
+      <span style="font-size: 2.5rem;">📓</span>
+      <h3 style="margin-top: 1rem; color: var(--color-text-main); font-size: 1.2rem;">No Journals Yet</h3>
+      <p style="color: var(--color-text-muted); font-size: 0.95rem;">You haven't written any daily journals. Start keeping your journal today!</p>
+    </div>
+  <% else %>
+    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+      <% @journal_stats.each do |date, count| %>
+        <a href="<%= daily_journal_path(date.to_s) %>" style="text-decoration: none; display: block;">
+          <div style="background: var(--color-surface); border-radius: 8px; border: 1px solid var(--color-border); padding: 0.75rem 1.25rem; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); transition: transform 0.2s, background 0.2s;" onmouseover="this.style.background='var(--color-bg-secondary)';" onmouseout="this.style.background='var(--color-surface)';">
+            <div>
+              <h3 style="margin: 0 0 0.25rem 0; font-size: 1.1rem; color: var(--color-text-main);">
+                <%= date.strftime("%A, %B %d, %Y") %>
+              </h3>
+              <p style="margin: 0; font-size: 0.85rem; color: var(--color-text-muted);">
+                <%= pluralize(count, 'log') %> recorded
+              </p>
+            </div>
+            <div style="color: var(--color-primary); font-size: 1.25rem;">
+              &rarr;
+            </div>
+          </div>
+        </a>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+</main>

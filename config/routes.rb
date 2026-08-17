@@ -33,4 +33,10 @@ Rails.application.routes.draw do
   
   post 'api/story/prompts', to: 'games#story_prompts'
   post 'api/story/ai_turn', to: 'games#story_ai_turn'
+
+  resources :daily_journals, only: [:index, :show, :create] do
+    collection do
+      get :today
+    end
+  end
 end
