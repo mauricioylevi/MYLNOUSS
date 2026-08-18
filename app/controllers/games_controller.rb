@@ -75,72 +75,79 @@ class GamesController < ApplicationController
   end
 
   def photo_memory
-    user = MainUser.first
-    user_id = user&.id
-
-    cache = GameCache.where(main_user_id: user_id, game_type: 'photo_memory').first
-    if cache
-      payload = cache.payload
-      cache.destroy
-      GameGenerationJob.perform_later(user_id, 'photo_memory')
-      
-      if payload['rounds']
-        payload['rounds'].each do |round|
-          photo = Photo.find_by(id: round['photo_id'])
-          round['image_url'] = photo ? url_for(photo.image) : nil
-        end
+    respond_to do |format|
+      format.html do
+        render :photo_memory
       end
-      
-      render json: { success: true, rounds: payload['rounds'] }
-      return
-    end
+      format.json do
+        user = MainUser.first
+        user_id = user&.id
 
-    unless ENV['GEMINI_API_KEY'].present?
-      render json: { success: false, error: "Missing Gemini API Key." }, status: 500
-      return
-    end
-
-    photos = Photo.where.not(status: 'draft').joins(:image_attachment).order("RANDOM()").limit(5)
-    
-    if photos.count < 5
-      render json: { success: false, error: "Not enough photos in gallery. Please upload at least 5 photos first!" }, status: 400
-      return
-    end
-
-    threads = []
-    results = Array.new(5)
-
-    photos.each_with_index do |photo, index|
-      threads << Thread.new do
-        if photo.image.attached?
-          image_data = photo.image.download
-          base64_image = Base64.strict_encode64(image_data)
-          mime_type = photo.image.content_type || "image/jpeg"
+        cache = GameCache.where(main_user_id: user_id, game_type: 'photo_memory').first
+        if cache
+          payload = cache.payload
+          cache.destroy
+          GameGenerationJob.perform_later(user_id, 'photo_memory')
           
-          question_data = GeminiService.generate_memory_question(base64_image, mime_type)
+          if payload['rounds']
+            payload['rounds'].each do |round|
+              photo = Photo.find_by(id: round['photo_id'])
+              round['image_url'] = photo ? url_for(photo.image) : nil
+            end
+          end
           
-          if question_data
-            image_url = url_for(photo.image)
-            results[index] = {
-              image_url: image_url,
-              question: question_data['question'],
-              choices: question_data['choices'],
-              answer: question_data['answer']
-            }
+          render json: { success: true, rounds: payload['rounds'] }
+          return
+        end
+
+        unless ENV['GEMINI_API_KEY'].present?
+          render json: { success: false, error: "Missing Gemini API Key." }, status: 500
+          return
+        end
+
+        photos = Photo.where.not(status: 'draft').joins(:image_attachment).order("RANDOM()").limit(3)
+        
+        if photos.count < 3
+          render json: { success: false, error: "Not enough photos in gallery. Please upload at least 3 photos first!" }, status: 400
+          return
+        end
+
+        threads = []
+        results = Array.new(3)
+
+        photos.each_with_index do |photo, index|
+          threads << Thread.new do
+            if photo.image.attached?
+              image_data = photo.image.download
+              base64_image = Base64.strict_encode64(image_data)
+              mime_type = photo.image.content_type || "image/jpeg"
+              
+              question_data = GeminiService.generate_memory_question(base64_image, mime_type)
+              
+              if question_data
+                image_url = url_for(photo.image)
+                results[index] = {
+                  image_url: image_url,
+                  question: question_data['question'],
+                  choices: question_data['choices'],
+                  answer: question_data['answer']
+                }
+              end
+            end
           end
         end
+
+        threads.each(&:join)
+        valid_rounds = results.compact
+
+        GameGenerationJob.perform_later(user_id, 'photo_memory')
+
+        if valid_rounds.length == 3
+          render json: { success: true, rounds: valid_rounds }
+        else
+          render json: { success: false, error: "Failed to generate questions for all photos." }, status: 500
+        end
       end
-    end
-
-    threads.each(&:join)
-    valid_rounds = results.compact
-
-    GameGenerationJob.perform_later(user_id, 'photo_memory')
-
-    if valid_rounds.length == 5
-      render json: { success: true, rounds: valid_rounds }
-    else
-      render json: { success: false, error: "Failed to generate questions for all photos." }, status: 500
     end
   end
 
@@ -299,24 +306,7 @@ class GamesController < ApplicationController
     @user = MainUser.first || MainUser.create
   end
 
-  def photo_trivia
-    @user = MainUser.first || MainUser.create
-    cache = GameCache.find_by(main_user_id: @user.id, game_type: 'photo_trivia')
-    
-    @game_data = nil
-    if cache && cache.payload && cache.payload['rounds']
-      rounds = cache.payload['rounds'].map do |r|
-        photo = Photo.find_by(id: r['photo_id'])
-        if photo && photo.image.attached?
-          r.merge('image_url' => url_for(photo.image))
-        else
-          nil
-        end
-      end.compact
-      
-      @game_data = { 'rounds' => rounds } if rounds.any?
-    end
-  end
+
 
   def critical_thinking
     @user = MainUser.first || MainUser.create

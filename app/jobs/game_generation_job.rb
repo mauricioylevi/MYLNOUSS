@@ -27,10 +27,10 @@ class GameGenerationJob < ApplicationJob
       data = GeminiService.generate_missing_word_data(profile_info)
       payload = { 'game_data' => data } if data
     when 'photo_memory'
-      photos = Photo.where.not(status: 'draft').joins(:image_attachment).order("RANDOM()").limit(5)
-      if photos.count >= 5
+      photos = Photo.where.not(status: 'draft').joins(:image_attachment).order("RANDOM()").limit(3)
+      if photos.count >= 3
         threads = []
-        results = Array.new(5)
+        results = Array.new(3)
         photos.each_with_index do |photo, index|
           threads << Thread.new do
             if photo.image.attached?
@@ -54,7 +54,7 @@ class GameGenerationJob < ApplicationJob
         end
         threads.each(&:join)
         valid_rounds = results.compact
-        if valid_rounds.length == 5
+        if valid_rounds.length == 3
           payload = { 'rounds' => valid_rounds }
         end
       end
@@ -77,25 +77,7 @@ class GameGenerationJob < ApplicationJob
       difficulty ||= 'easy'
       data = GeminiService.generate_word_search_data(difficulty, profile_info)
       payload = { 'words' => data } if data && data.any?
-    when 'photo_trivia'
-      # Find photos that have a description, order random, take up to 3
-      photos = Photo.where.not(description: [nil, '']).order("RANDOM()").limit(3)
-      if photos.any?
-        threads = []
-        results = Array.new(photos.count)
-        photos.each_with_index do |photo, index|
-          threads << Thread.new do
-            options = GeminiService.generate_photo_trivia_fakes(photo.description)
-            results[index] = {
-              'photo_id' => photo.id,
-              'correct' => photo.description,
-              'options' => options
-            }
-          end
-        end
-        threads.each(&:join)
-        payload = { 'rounds' => results.compact }
-      end
+
     when 'critical_thinking'
       difficulty ||= 'easy'
       rounds = GeminiService.generate_critical_thinking_data(difficulty, profile_info)

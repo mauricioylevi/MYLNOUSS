@@ -3,7 +3,7 @@ class DashboardController < ApplicationController
     @user = MainUser.first
     if @user
       # Background generation for games that rely on profile/photo data
-      %w[crossword missing_word photo_memory career_quiz word_search photo_trivia critical_thinking lets_talk].each do |game_type|
+      %w[crossword missing_word photo_memory career_quiz word_search critical_thinking lets_talk].each do |game_type|
         # Avoid duplicating generation if already recently cached
         unless GameCache.where(main_user_id: @user.id, game_type: game_type).where('updated_at > ?', 1.hour.ago).exists?
           GameGenerationJob.perform_later(@user.id, game_type)

@@ -25,7 +25,6 @@ Rails.application.routes.draw do
   get 'games/tic_tac_toe', to: 'games#tic_tac_toe'
   get 'games/word_search', to: 'games#word_search'
   get 'games/create_a_story', to: 'games#create_a_story'
-  get 'games/photo_trivia', to: 'games#photo_trivia'
   get 'games/critical_thinking', to: 'games#critical_thinking'
   get 'games/lets_talk', to: 'games#lets_talk'
   

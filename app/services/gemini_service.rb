@@ -85,10 +85,9 @@ class GeminiService
     
     prompt = <<~PROMPT
       You are generating data for a "Photo Memory" multiple-choice quiz.
-      Look at the provided image and generate exactly ONE question about a specific visual detail in it 
-      (e.g., "What color is the dog?", "How many chairs are in the background?", "What object is on the table?").
-      Make it challenging but clearly visible.
-      Provide 3 choices (1 correct, 2 incorrect).
+      Look at the provided image and generate exactly ONE question to identify a LARGE, OBVIOUS object, color, or person.
+      DO NOT ask about tiny, blurry, or difficult to distinguish background details.
+      Produce exactly 3 choices (1 correct, 2 incorrect).
       Return ONLY a JSON object in this format, with no markdown formatting:
       { "question": "What color is the car?", "choices": ["Red", "Blue", "Black"], "answer": "Red" }
     PROMPT
@@ -459,49 +458,6 @@ class GeminiService
     return "Then, something unexpected happened."
   end
 
-  def self.generate_photo_trivia_fakes(real_description)
-    api_key = ENV['GEMINI_API_KEY']
-    return ["A beautiful day.", "Just hanging out.", real_description].shuffle unless api_key.present?
-    
-    uri = URI("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=#{api_key}")
-    
-    prompt = <<~PROMPT
-      You are generating fake options for a Photo Trivia game. 
-      The actual caption written for the photo is: "#{real_description}"
-      
-      Generate exactly 2 fake photo captions that sound completely different but plausible. 
-      Keep them roughly the same length and tone. Make them slightly funny or ordinary.
-      
-      Return ONLY a JSON array containing the 2 fake string options. Do NOT include the real description.
-      Example: ["Having a great time at the beach!", "Can't believe this happened today..."]
-    PROMPT
-    
-    req = Net::HTTP::Post.new(uri)
-    req['Content-Type'] = 'application/json'
-    req.body = {
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.8 }
-    }.to_json
-    
-    begin
-      res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true, read_timeout: 30) do |http|
-        http.request(req)
-      end
-      if res.is_a?(Net::HTTPSuccess)
-        data = JSON.parse(res.body)
-        text = data.dig('candidates', 0, 'content', 'parts', 0, 'text') || '[]'
-        text = text.gsub("```json", "").gsub("```", "").strip
-        fakes = JSON.parse(text)
-        
-        # Combine real and fakes, then shuffle
-        options = [real_description, fakes[0] || "A memory to cherish", fakes[1] || "What a funny moment"].compact.shuffle
-        return options
-      end
-    rescue => e
-      Rails.logger.error "Gemini Photo Trivia Exception: #{e.message}"
-    end
-    return ["What a day!", "Unforgettable.", real_description].shuffle
-  end
 
   def self.generate_critical_thinking_data(difficulty, profile_info)
     api_key = ENV['GEMINI_API_KEY']

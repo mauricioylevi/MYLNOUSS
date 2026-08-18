@@ -1026,23 +1026,42 @@ window.pmCurrentRoundIndex = 0;
 window.pmScore = 0;
 window.pmTimer = null;
 
-window.openPhotoMemoryModal = function(e) {
-    if (e) e.preventDefault();
-    const modal = document.getElementById('photo-memory-modal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    startPhotoMemory();
-};
+function initPhotoMemoryPage() {
+    const container = document.getElementById('photo-memory-container');
+    if (container) {
+        startPhotoMemory();
+        
+        // Setup magnifying glass zoom
+        const imgContainer = document.getElementById('pm-image-container');
+        const img = document.getElementById('pm-image');
+        if (imgContainer && img) {
+            imgContainer.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const xPercent = (x / rect.width) * 100;
+                const yPercent = (y / rect.height) * 100;
+                img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+                img.style.transform = 'scale(2)';
+            });
+            imgContainer.addEventListener('mouseleave', function() {
+                img.style.transformOrigin = 'center center';
+                img.style.transform = 'scale(1)';
+            });
+        }
+    }
+}
 
-window.closePhotoMemoryModal = function(e) {
-    if (e) e.preventDefault();
-    const modal = document.getElementById('photo-memory-modal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-    clearInterval(window.pmTimer);
+document.addEventListener('turbo:load', initPhotoMemoryPage);
+
+window.pmEndMemoryPhase = function() {
+    pmStartQuizPhase();
 };
 
 window.startPhotoMemory = async function() {
+    if (window.isFetchingPhotoMemory) return;
+    window.isFetchingPhotoMemory = true;
+    
     window.pmScore = 0;
     window.pmCurrentRoundIndex = 0;
     
@@ -1052,20 +1071,23 @@ window.startPhotoMemory = async function() {
     document.getElementById('pm-end-state').style.display = 'none';
     
     try {
-        const response = await fetch('/games/photo_memory');
+        const response = await fetch('/games/photo_memory.json');
         const data = await response.json();
+        
+        window.isFetchingPhotoMemory = false;
         
         if (data.success && data.rounds.length > 0) {
             window.pmRounds = data.rounds;
             pmStartMemoryPhase();
         } else {
             alert(data.error || "Failed to generate game.");
-            closePhotoMemoryModal();
+            window.location.href = '/';
         }
     } catch (err) {
         console.error("Photo Memory Error:", err);
+        window.isFetchingPhotoMemory = false;
         alert("Network error while generating game.");
-        closePhotoMemoryModal();
+        window.location.href = '/';
     }
 };
 
@@ -1074,7 +1096,7 @@ window.pmStartMemoryPhase = function() {
         // End Game
         document.getElementById('pm-memory-state').style.display = 'none';
         document.getElementById('pm-quiz-state').style.display = 'none';
-        document.getElementById('pm-end-state').style.display = 'block';
+        document.getElementById('pm-end-state').style.display = 'flex';
         document.getElementById('pm-final-score').innerText = `You got ${window.pmScore} out of ${window.pmRounds.length} correct!`;
         return;
     }
@@ -1110,7 +1132,6 @@ window.pmStartQuizPhase = function() {
     document.getElementById('pm-quiz-state').style.display = 'flex';
     
     const round = window.pmRounds[window.pmCurrentRoundIndex];
-    document.getElementById('pm-quiz-progress').innerText = `Round ${window.pmCurrentRoundIndex + 1} of ${window.pmRounds.length}`;
     document.getElementById('pm-question').innerText = round.question;
     
     const choicesDiv = document.getElementById('pm-choices');
@@ -2561,96 +2582,7 @@ window.readStoryAloud = function() {
     window.speechSynthesis.speak(utterance);
 };
 
-/* =========================================
-   PHOTO TRIVIA GAME
-========================================= */
-window.ptRounds = [];
-window.ptCurrentRound = 0;
-window.ptScore = 0;
-window.ptIsAnimating = false;
 
-window.initPhotoTriviaPage = function() {
-    const container = document.getElementById('photo-trivia-container');
-    if (!container) return;
-    
-    try {
-        const raw = container.getAttribute('data-rounds');
-        if (raw) {
-            window.ptRounds = JSON.parse(raw);
-            window.ptCurrentRound = 0;
-            window.ptScore = 0;
-            if (window.ptRounds && window.ptRounds.length > 0) {
-                renderPhotoTriviaRound();
-            }
-        }
-    } catch (e) {
-        console.error("Photo Trivia init error", e);
-    }
-};
-
-function renderPhotoTriviaRound() {
-    if (window.ptCurrentRound >= window.ptRounds.length) {
-        document.getElementById('photo-trivia-container').style.display = 'none';
-        document.getElementById('photo-trivia-end-screen').style.display = 'flex';
-        document.getElementById('pt-score-text').innerText = `You remembered ${window.ptScore} out of ${window.ptRounds.length} memories!`;
-        return;
-    }
-    
-    window.ptIsAnimating = false;
-    const roundData = window.ptRounds[window.ptCurrentRound];
-    
-    document.getElementById('pt-round-indicator').innerText = `Round ${window.ptCurrentRound + 1} / ${window.ptRounds.length}`;
-    document.getElementById('pt-photo').src = roundData.image_url;
-    
-    const feedback = document.getElementById('pt-feedback');
-    feedback.style.display = 'none';
-    feedback.className = '';
-    
-    const optionsContainer = document.getElementById('pt-options');
-    optionsContainer.innerHTML = '';
-    
-    roundData.options.forEach(optText => {
-        const btn = document.createElement('button');
-        btn.className = 'pt-option-btn';
-        btn.innerText = optText;
-        btn.onclick = () => handlePhotoTriviaAnswer(optText, roundData.correct, btn);
-        optionsContainer.appendChild(btn);
-    });
-}
-
-function handlePhotoTriviaAnswer(selectedText, correctText, btnEl) {
-    if (window.ptIsAnimating) return;
-    window.ptIsAnimating = true;
-    
-    const feedback = document.getElementById('pt-feedback');
-    feedback.style.display = 'block';
-    
-    // Highlight correct answer no matter what
-    const allBtns = document.querySelectorAll('.pt-option-btn');
-    allBtns.forEach(b => {
-        if (b.innerText === correctText) b.classList.add('correct');
-        b.style.pointerEvents = 'none';
-    });
-    
-    if (selectedText === correctText) {
-        window.ptScore++;
-        feedback.innerText = "Correct! Spot on memory.";
-        feedback.style.background = "#d1fae5";
-        feedback.style.color = "#065f46";
-        feedback.style.border = "1px solid #10b981";
-    } else {
-        btnEl.classList.add('wrong');
-        feedback.innerText = "Not quite! Let's try the next one.";
-        feedback.style.background = "#fee2e2";
-        feedback.style.color = "#991b1b";
-        feedback.style.border = "1px solid #ef4444";
-    }
-    
-    setTimeout(() => {
-        window.ptCurrentRound++;
-        renderPhotoTriviaRound();
-    }, 2500);
-}
 
 /* =========================================
    CRITICAL THINKING GAME

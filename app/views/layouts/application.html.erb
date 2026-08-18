@@ -50,7 +50,7 @@
                     <ul class="sidebar-menu">
                         <li>
                             <a href="/profile" class="sidebar-link <%= 'active' if current_page?('/profile') %>">
-                                <span>👥</span> User Profiles
+                                <span>👥</span> User Profile
                             </a>
                         </li>
                         <li>
@@ -84,7 +84,7 @@
                         </li>
                         <li>
                             <a href="#" class="sidebar-link">
-                                <span>📓</span> Active Journals
+                                <span>📓</span> Journal History
                             </a>
                         </li>
                     </ul>
@@ -106,14 +106,12 @@
                                 <a href="/games/photo_memory" class="sidebar-dropdown-link <%= 'active' if action_name == 'photo_memory' %>">Photo Memory</a>
                                 <a href="/games/career_quiz" class="sidebar-dropdown-link <%= 'active' if action_name == 'career_quiz' %>">Career Quiz</a>
                                 <a href="#" class="sidebar-dropdown-link" onclick="openProfileQuizModal(event)">Picturez Quiz</a>
-                                <a href="#" class="sidebar-dropdown-link" onclick="openPhotoMemoryModal(event)">Photo Memory Modal</a>
                                 <a href="#" class="sidebar-dropdown-link" onclick="openCardsMatchModal(event)">Cards Match</a>
                                 <a href="/games/crossword" class="sidebar-dropdown-link <%= 'active' if action_name == 'crossword' %>">Crossword</a>
                                 <a href="/games/missing_word" class="sidebar-dropdown-link <%= 'active' if action_name == 'missing_word' %>">Missing Word</a>
                                 <a href="/games/tic_tac_toe" class="sidebar-dropdown-link <%= 'active' if action_name == 'tic_tac_toe' %>">Tic-Tac-Toe</a>
                                 <a href="/games/word_search" class="sidebar-dropdown-link <%= 'active' if action_name == 'word_search' %>">Word Search</a>
                                 <a href="/games/create_a_story" class="sidebar-dropdown-link <%= 'active' if action_name == 'create_a_story' %>">Create a Story</a>
-                                <a href="/games/photo_trivia" class="sidebar-dropdown-link <%= 'active' if action_name == 'photo_trivia' %>">Photo Trivia</a>
                                 <a href="/games/critical_thinking" class="sidebar-dropdown-link <%= 'active' if action_name == 'critical_thinking' %>">Critical Thinking</a>
                                 <a href="/games/lets_talk" class="sidebar-dropdown-link <%= 'active' if action_name == 'lets_talk' %>">Let's Talk</a>
                             </div>
@@ -215,7 +213,7 @@
     <style>
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .quiz-btn {
-            background: white;
+            background: var(--color-surface);
             border: 2px solid var(--color-border);
             border-radius: 12px;
             padding: 1rem;
@@ -228,7 +226,7 @@
         }
         .quiz-btn:hover:not(:disabled) {
             border-color: var(--color-primary);
-            background: rgba(99, 102, 241, 0.05);
+            background: rgba(99, 102, 241, 0.1);
         }
         .quiz-btn.correct {
             background: #e6f4ea !important;
@@ -297,61 +295,6 @@
                 </div>
             </div>
             
-        </div>
-    </div>
-
-    <!-- Photo Memory Modal -->
-    <div class="modal-overlay" id="photo-memory-modal" style="z-index: 9998; background: rgba(0, 0, 0, 0.7);">
-        <div class="modal-content" style="max-width: 800px; width: 95%; min-height: 600px; display: flex; flex-direction: column; background: var(--color-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
-            <div class="modal-header" style="background: white; border-bottom: 1px solid var(--color-border); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="margin: 0; font-size: 1.5rem; color: var(--color-text-main);">🧠 Photo Memory</h2>
-            </div>
-            
-            <div class="modal-body" id="pm-body" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; text-align: center;">
-                
-                <!-- Loading State -->
-                <div id="pm-loading-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-                    <div style="font-size: 3rem; animation: spin 2s linear infinite;">⌛</div>
-                    <h3 style="margin-top: 1.5rem; color: var(--color-text-main);">Preparing your photo memory game...</h3>
-                    <p style="color: var(--color-text-muted);">AI is analyzing your photos to generate questions.</p>
-                </div>
-
-                <!-- Memory Phase -->
-                <div id="pm-memory-state" style="display: none; width: 100%; flex-direction: column; align-items: center;">
-                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 1rem;">
-                        <h3 id="pm-progress" style="color: var(--color-primary); margin: 0; font-size: 1.2rem;">Round 1 of 5</h3>
-                        <div style="background: #fce8e6; color: #c5221f; padding: 0.5rem 1rem; border-radius: 20px; font-weight: bold; font-size: 1.2rem;">
-                            ⏱ <span id="pm-timer">60</span>s
-                        </div>
-                    </div>
-                    <p style="color: var(--color-text-main); font-size: 1.2rem; margin-bottom: 1.5rem;">Memorize the details in this photo!</p>
-                    
-                    <img id="pm-image" src="" style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 12px; box-shadow: var(--shadow-md); margin-bottom: 2rem;">
-                    
-                    <button class="btn btn-primary" onclick="pmStartQuizPhase()" style="padding: 1rem 3rem; border-radius: 50px; font-size: 1.2rem; font-weight: 700;">I am ready!</button>
-                </div>
-                
-                <!-- Quiz Phase -->
-                <div id="pm-quiz-state" style="display: none; width: 100%; flex-direction: column; align-items: center;">
-                    <h3 id="pm-quiz-progress" style="color: var(--color-primary); margin-bottom: 1.5rem; font-size: 1.2rem;">Round 1 of 5</h3>
-                    <h2 id="pm-question" style="color: var(--color-text-main); margin-bottom: 2rem; font-size: 1.8rem;"></h2>
-                    
-                    <div id="pm-choices" style="display: grid; grid-template-columns: 1fr; gap: 1rem; width: 100%; max-width: 600px;">
-                        <!-- Buttons injected via JS -->
-                    </div>
-                </div>
-
-                <!-- End State -->
-                <div id="pm-end-state" style="display: none; width: 100%; text-align: center;">
-                    <div style="font-size: 5rem; margin-bottom: 1rem;">🏆</div>
-                    <h2 style="color: var(--color-text-main); margin-bottom: 0.5rem;">Game Complete!</h2>
-                    <p id="pm-final-score" style="font-size: 1.5rem; color: var(--color-primary); font-weight: bold; margin-bottom: 2rem;">You got 5 out of 5 correct!</p>
-                    <div style="display: flex; justify-content: center; gap: 1rem;">
-                        <button class="btn btn-outline" style="padding: 0.75rem 2rem; border-radius: 50px; font-size: 1.1rem;" onclick="closePhotoMemoryModal(event)">Exit</button>
-                        <button class="btn btn-primary" style="padding: 0.75rem 2rem; border-radius: 50px; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);" onclick="startPhotoMemory()">Play Again</button>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
