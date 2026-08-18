@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_17_023900) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_17_234600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -62,7 +62,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_023900) do
     t.index ["main_user_id"], name: "index_game_caches_on_main_user_id"
   end
 
+  create_table "guests", force: :cascade do |t|
+    t.boolean "can_play_games", default: false
+    t.boolean "can_post_photos", default: false
+    t.boolean "can_read_journals", default: false
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.string "invitation_token"
+    t.string "name"
+    t.string "password_digest"
+    t.boolean "registered", default: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "main_users", force: :cascade do |t|
+    t.string "access_token"
     t.datetime "created_at", null: false
     t.jsonb "profile_data"
     t.datetime "updated_at", null: false

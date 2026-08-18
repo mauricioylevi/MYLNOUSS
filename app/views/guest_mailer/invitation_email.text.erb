@@ -1,0 +1,14 @@
+Welcome to MYLNOUSS, <%= @guest.name %>!
+
+You have been invited to access MYLNOUSS as a Guest. 
+
+The system Admin has granted you the following permissions:
+<% if @guest.can_post_photos %>- Post Photos remotely into the Photo Gallery<% end %>
+<% if @guest.can_play_games %>- Play games with the Main User<% end %>
+<% if @guest.can_read_journals %>- Access and read the Main User's Daily Journals<% end %>
+
+To accept this invitation and set up your password, please visit this link:
+<%= @url %>
+
+Thanks,
+The MYLNOUSS Team

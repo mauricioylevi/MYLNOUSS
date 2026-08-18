@@ -1,0 +1,58 @@
+<main class="app-content">
+<div style="max-width: 600px; margin: 0 auto; padding: 2rem 1rem; width: 100%;">
+  
+  <div style="margin-bottom: 2rem;">
+    <a href="<%= guests_path %>" style="color: var(--color-text-muted); text-decoration: none; font-size: 0.9rem;">&larr; Back to Access Control</a>
+    <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--color-text-main); margin: 1rem 0 0 0;">Invite Guest</h1>
+    <p style="font-size: 1.1rem; color: var(--color-text-muted); margin: 0.5rem 0 0 0;">Grant access to family members, friends, or caregivers.</p>
+  </div>
+
+  <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 2rem; box-shadow: var(--shadow-sm);">
+    <%= form_with model: @guest, url: guests_path, local: true do |f| %>
+      
+      <% if @guest.errors.any? %>
+        <div style="background: #fef2f2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <ul style="margin: 0; padding-left: 1.5rem;">
+            <% @guest.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div style="margin-bottom: 1.5rem;">
+        <%= f.label :name, "Full Name", style: "display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--color-text-main);" %>
+        <%= f.text_field :name, class: "form-control", style: "width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--color-border); background: var(--color-bg); color: var(--color-text-main);", required: true %>
+      </div>
+
+      <div style="margin-bottom: 2rem;">
+        <%= f.label :email, "Email Address", style: "display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--color-text-main);" %>
+        <%= f.email_field :email, class: "form-control", style: "width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--color-border); background: var(--color-bg); color: var(--color-text-main);", required: true %>
+      </div>
+
+      <h3 style="font-size: 1.1rem; color: var(--color-text-main); margin: 0 0 1rem 0; border-bottom: 1px solid var(--color-border); padding-bottom: 0.5rem;">Permissions</h3>
+      
+      <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+        <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+          <%= f.check_box :can_post_photos, style: "width: 1.25rem; height: 1.25rem; cursor: pointer;" %>
+          <span style="color: var(--color-text-main); font-size: 1.05rem;">Post Photos remotely into Photo Gallery</span>
+        </label>
+        
+        <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+          <%= f.check_box :can_play_games, style: "width: 1.25rem; height: 1.25rem; cursor: pointer;" %>
+          <span style="color: var(--color-text-main); font-size: 1.05rem;">Play games with Main User</span>
+        </label>
+        
+        <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+          <%= f.check_box :can_read_journals, style: "width: 1.25rem; height: 1.25rem; cursor: pointer;" %>
+          <span style="color: var(--color-text-main); font-size: 1.05rem;">Access Main User Journals</span>
+        </label>
+      </div>
+
+      <div>
+        <%= f.submit "Send Invitation", class: "btn btn-primary", style: "width: 100%; border-radius: 50px; font-weight: 600; font-size: 1.1rem; padding: 0.75rem;" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+</main>

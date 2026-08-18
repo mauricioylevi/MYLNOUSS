@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      body { font-family: sans-serif; color: #334155; line-height: 1.6; }
+      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { text-align: center; margin-bottom: 30px; }
+      .button { display: inline-block; padding: 12px 24px; background-color: #22c55e; color: white; text-decoration: none; border-radius: 50px; font-weight: bold; margin: 20px 0; }
+      .permissions { background-color: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0; }
+      ul { padding-left: 20px; margin: 0; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1 style="color: #22c55e; margin: 0;">MYLNOUSS</h1>
+      </div>
+      
+      <p>Hello <%= @guest.name %>,</p>
+      
+      <p>You have been invited to access MYLNOUSS as a Guest! The system Admin has granted you the following permissions:</p>
+      
+      <div class="permissions">
+        <ul>
+          <% if @guest.can_post_photos %>
+            <li>Post Photos remotely into the Photo Gallery</li>
+          <% end %>
+          <% if @guest.can_play_games %>
+            <li>Play games with the Main User</li>
+          <% end %>
+          <% if @guest.can_read_journals %>
+            <li>Access and read the Main User's Daily Journals</li>
+          <% end %>
+          <% if !@guest.can_post_photos && !@guest.can_play_games && !@guest.can_read_journals %>
+            <li>General Access</li>
+          <% end %>
+        </ul>
+      </div>
+      
+      <p>To accept this invitation and set up your secure password, please click the link below:</p>
+      
+      <div style="text-align: center;">
+        <a href="<%= @url %>" class="button">Create Password & Access Account</a>
+      </div>
+      
+      <p>If you have any questions, please contact the person who invited you.</p>
+      
+      <p>Thanks,<br>The MYLNOUSS Team</p>
+    </div>
+  </body>
+</html>

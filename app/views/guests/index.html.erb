@@ -1,0 +1,125 @@
+<main class="app-content">
+<div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; width: 100%;">
+  <div style="margin-bottom: 2rem;">
+    <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--color-text-main); margin: 0;">Access Control</h1>
+    <p style="font-size: 1.1rem; color: var(--color-text-muted); margin: 0.5rem 0 0 0;">Manage permissions for the Main User and Guests</p>
+  </div>
+
+  <% if notice.present? %>
+    <div style="background: #ecfdf5; color: #065f46; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+      <%= notice %>
+    </div>
+  <% end %>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem;">
+    
+    <!-- LEFT COLUMN -->
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+      <!-- Main User Access Block -->
+      <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1.25rem; color: var(--color-text-main); border-bottom: 1px solid var(--color-border); padding-bottom: 0.5rem;">Main User Setup</h3>
+        <p style="color: var(--color-text-muted); font-size: 0.95rem; margin-bottom: 1rem;">
+          Generate an access token to allow the Main User to log in and exercise their mental agility.
+        </p>
+        
+        <div style="background: var(--color-bg); padding: 1rem; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <span style="font-weight: 600; color: var(--color-text-main);">Current Token: </span>
+            <% if @main_user&.access_token.present? %>
+              <code style="background: #e2e8f0; padding: 0.2rem 0.5rem; border-radius: 4px; color: #334155; word-break: break-all;"><%= @main_user.access_token %></code>
+            <% else %>
+              <span style="color: var(--color-text-muted); font-style: italic;">Not generated yet</span>
+            <% end %>
+          </div>
+          <%= button_to "Generate Token", generate_main_user_token_guests_path, method: :post, class: "btn btn-outline", style: "border-radius: 50px; font-size: 0.85rem;" %>
+        </div>
+      </div>
+
+      <!-- Invite Guest Form Block -->
+      <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1.25rem; color: var(--color-text-main); border-bottom: 1px solid var(--color-border); padding-bottom: 0.5rem;">Invite New Guest</h3>
+        
+        <%= form_with model: @guest, url: guests_path, local: true do |f| %>
+          <% if @guest.errors.any? %>
+            <div style="background: #fef2f2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+              <ul style="margin: 0; padding-left: 1.5rem;">
+                <% @guest.errors.full_messages.each do |msg| %>
+                  <li><%= msg %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div style="margin-bottom: 1rem;">
+            <%= f.label :name, "Full Name", style: "display: block; margin-bottom: 0.25rem; font-weight: 600; color: var(--color-text-main);" %>
+            <%= f.text_field :name, class: "form-control", style: "width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid var(--color-border); background: var(--color-bg); color: var(--color-text-main);", required: true %>
+          </div>
+
+          <div style="margin-bottom: 1.5rem;">
+            <%= f.label :email, "Email Address", style: "display: block; margin-bottom: 0.25rem; font-weight: 600; color: var(--color-text-main);" %>
+            <%= f.email_field :email, class: "form-control", style: "width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid var(--color-border); background: var(--color-bg); color: var(--color-text-main);", required: true %>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+              <%= f.check_box :can_post_photos, style: "width: 1.25rem; height: 1.25rem; cursor: pointer;" %>
+              <span style="color: var(--color-text-main); font-size: 1rem;">Post Photos remotely</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+              <%= f.check_box :can_play_games, style: "width: 1.25rem; height: 1.25rem; cursor: pointer;" %>
+              <span style="color: var(--color-text-main); font-size: 1rem;">Play games with Main User</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+              <%= f.check_box :can_read_journals, style: "width: 1.25rem; height: 1.25rem; cursor: pointer;" %>
+              <span style="color: var(--color-text-main); font-size: 1rem;">Access Main User Journals</span>
+            </label>
+          </div>
+
+          <div>
+            <%= f.submit "Send Invitation", class: "btn btn-primary", style: "width: 100%; border-radius: 50px; font-weight: 600; font-size: 1rem; padding: 0.75rem;" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div style="display: flex; flex-direction: column;">
+      <!-- Guests Block -->
+      <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; box-shadow: var(--shadow-sm); height: 100%;">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1.25rem; color: var(--color-text-main); border-bottom: 1px solid var(--color-border); padding-bottom: 0.5rem;">Invited Guests</h3>
+        
+        <% if @guests.empty? %>
+          <p style="color: var(--color-text-muted); text-align: center; padding: 2rem 0;">No guests have been invited yet.</p>
+        <% else %>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <% @guests.each do |guest| %>
+              <div style="background: var(--color-bg); padding: 1rem; border-radius: 8px; display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <h4 style="margin: 0; font-size: 1.1rem; color: var(--color-text-main);"><%= guest.name %></h4>
+                  <span style="font-size: 0.8rem; padding: 0.2rem 0.6rem; border-radius: 50px; background: <%= guest.registered? ? '#ecfdf5' : '#fef3c7' %>; color: <%= guest.registered? ? '#065f46' : '#92400e' %>;">
+                    <%= guest.registered? ? 'Registered' : 'Pending Registration' %>
+                  </span>
+                </div>
+                <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted);"><%= guest.email %></p>
+                
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+                  <% if guest.can_post_photos %>
+                    <span style="font-size: 0.75rem; background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.5rem; border-radius: 4px;">📸 Post Photos</span>
+                  <% end %>
+                  <% if guest.can_play_games %>
+                    <span style="font-size: 0.75rem; background: #ede9fe; color: #5b21b6; padding: 0.2rem 0.5rem; border-radius: 4px;">🎲 Play Games</span>
+                  <% end %>
+                  <% if guest.can_read_journals %>
+                    <span style="font-size: 0.75rem; background: #fce7f3; color: #be185d; padding: 0.2rem 0.5rem; border-radius: 4px;">📓 Read Journals</span>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+</div>
+</main>

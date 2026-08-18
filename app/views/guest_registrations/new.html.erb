@@ -1,0 +1,31 @@
+<main class="app-content" style="align-items: center; justify-content: center;">
+<div style="max-width: 450px; width: 100%; padding: 2rem 1rem;">
+  
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">🔐</div>
+    <h1 style="font-size: 2rem; font-weight: 800; color: var(--color-text-main); margin: 0 0 0.5rem 0;">Welcome, <%= @guest.name %></h1>
+    <p style="font-size: 1.1rem; color: var(--color-text-muted); margin: 0;">Please set a password to access your MYLNOUSS account.</p>
+  </div>
+
+  <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 2rem; box-shadow: var(--shadow-sm);">
+    <%= form_with url: guest_registrations_path, local: true do |f| %>
+      <%= hidden_field_tag :token, params[:token] %>
+      
+      <% if flash[:alert] %>
+        <div style="background: #fef2f2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center;">
+          <%= flash[:alert] %>
+        </div>
+      <% end %>
+
+      <div style="margin-bottom: 2rem;">
+        <%= f.label :password, "Create Password", style: "display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--color-text-main);" %>
+        <%= f.password_field :password, class: "form-control", style: "width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--color-border); background: var(--color-bg); color: var(--color-text-main);", required: true %>
+      </div>
+
+      <div>
+        <%= f.submit "Set Password & Login", class: "btn btn-primary", style: "width: 100%; border-radius: 50px; font-weight: 600; font-size: 1.1rem; padding: 0.75rem;" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+</main>

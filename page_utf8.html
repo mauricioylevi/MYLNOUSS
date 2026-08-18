@@ -1,26 +1,48 @@
-<!DOCTYPE html>
+﻿<!-- BEGIN app/views/layouts/application.html.erb
+--><!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Mylnouss Core" %></title>
+    <title>Mylnouss Core</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Mylnouss Core">
     <meta name="mobile-web-app-capable" content="yes">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+    <meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="zYZHZZdTq2FjVnaK-bh5KuRz-yUrJflhNFZS73LbunbCu8OwHyh9vwuRz4Hjed7ptOgCxpJLE3Bqr9Ps7FshYg" />
+    
 
-    <%= yield :head %>
+    
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
+    <link rel="stylesheet" href="/assets/application-32704c6a.css" data-turbo-track="reload" />
+<link rel="stylesheet" href="/assets/dashboard-57a200a6.css" data-turbo-track="reload" />
+<link rel="stylesheet" href="/assets/design-tokens-a7caf0cf.css" data-turbo-track="reload" />
+<link rel="stylesheet" href="/assets/index-ebc0984e.css" data-turbo-track="reload" />
+    <script type="importmap" data-turbo-track="reload">{
+  "imports": {
+    "application": "/assets/application-34b70d32.js",
+    "@hotwired/turbo-rails": "/assets/turbo.min-9fd88cd5.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-4b1e420e.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-1fc53fe7.js",
+    "mylnouss_app": "/assets/mylnouss_app-0ccbd8a3.js",
+    "controllers/application": "/assets/controllers/application-3affb389.js",
+    "controllers/hello_controller": "/assets/controllers/hello_controller-708796bd.js",
+    "controllers": "/assets/controllers/index-ee64e1f1.js"
+  }
+}</script>
+<link rel="modulepreload" href="/assets/application-34b70d32.js">
+<link rel="modulepreload" href="/assets/turbo.min-9fd88cd5.js">
+<link rel="modulepreload" href="/assets/stimulus.min-4b1e420e.js">
+<link rel="modulepreload" href="/assets/stimulus-loading-1fc53fe7.js">
+<link rel="modulepreload" href="/assets/mylnouss_app-0ccbd8a3.js">
+<link rel="modulepreload" href="/assets/controllers/application-3affb389.js">
+<link rel="modulepreload" href="/assets/controllers/hello_controller-708796bd.js">
+<link rel="modulepreload" href="/assets/controllers/index-ee64e1f1.js">
+<script type="module">import "application"</script>
   </head>
 
   <body class="dashboard-body">
@@ -49,17 +71,17 @@
                     </div>
                     <ul class="sidebar-menu">
                         <li>
-                            <a href="#" class="sidebar-link <%= 'active' if controller_name == 'dashboard' %>" onclick="openProfileQuestionnaire(event)">
+                            <a href="#" class="sidebar-link active" onclick="openProfileQuestionnaire(event)">
                                 <span>👥</span> User Profiles
                             </a>
                         </li>
                         <li>
-                            <a href="/photos" class="sidebar-link <%= 'active' if controller_name == 'photos' %>">
+                            <a href="/photos" class="sidebar-link">
                                 <span>📸</span> Post Photos
                             </a>
                         </li>
                         <li>
-                            <a href="<%= guests_path %>" class="sidebar-link <%= 'active' if controller_name == 'guests' %>">
+                            <a href="#" class="sidebar-link">
                                 <span>🔒</span> Access Control
                             </a>
                         </li>
@@ -97,25 +119,26 @@
                     </div>
                     <ul class="sidebar-menu">
                         <li>
-                            <a href="#" class="sidebar-link <%= 'active' if controller_name == 'games' %>" onclick="toggleSidebarDropdown(event, 'games-dropdown', 'games-arrow')">
+                            <a href="#" class="sidebar-link" onclick="toggleSidebarDropdown(event, 'games-dropdown', 'games-arrow')">
                                 <span>🧩</span> Enjoy Games
                                 <span class="dropdown-arrow" id="games-arrow">▼</span>
                             </a>
-                            <div class="sidebar-dropdown" id="games-dropdown" style="<%= 'display: block;' if controller_name == 'games' %>">
-                                <a href="/games/gallery" class="sidebar-dropdown-link <%= 'active' if action_name == 'gallery' %>">Photo Gallery</a>
-                                <a href="/games/photo_memory" class="sidebar-dropdown-link <%= 'active' if action_name == 'photo_memory' %>">Photo Memory</a>
-                                <a href="/games/career_quiz" class="sidebar-dropdown-link <%= 'active' if action_name == 'career_quiz' %>">Career Quiz</a>
+                            <div class="sidebar-dropdown" id="games-dropdown">
+                                <a href="/games/gallery" class="sidebar-dropdown-link">Photo Gallery</a>
+                                <a href="/games/photo_memory" class="sidebar-dropdown-link">Photo Memory</a>
+                                <a href="/games/career_quiz" class="sidebar-dropdown-link">Career Quiz</a>
                                 <a href="#" class="sidebar-dropdown-link" onclick="openProfileQuizModal(event)">Picturez Quiz</a>
-                                <a href="#" class="sidebar-dropdown-link" onclick="openPhotoMemoryModal(event)">Photo Memory Modal</a>
+                                <a href="#" class="sidebar-dropdown-link" onclick="openPhotoMemoryModal(event)">Photo Memory</a>
                                 <a href="#" class="sidebar-dropdown-link" onclick="openCardsMatchModal(event)">Cards Match</a>
-                                <a href="/games/crossword" class="sidebar-dropdown-link <%= 'active' if action_name == 'crossword' %>">Crossword</a>
-                                <a href="/games/missing_word" class="sidebar-dropdown-link <%= 'active' if action_name == 'missing_word' %>">Missing Word</a>
-                                <a href="/games/tic_tac_toe" class="sidebar-dropdown-link <%= 'active' if action_name == 'tic_tac_toe' %>">Tic-Tac-Toe</a>
-                                <a href="/games/word_search" class="sidebar-dropdown-link <%= 'active' if action_name == 'word_search' %>">Word Search</a>
-                                <a href="/games/create_a_story" class="sidebar-dropdown-link <%= 'active' if action_name == 'create_a_story' %>">Create a Story</a>
-                                <a href="/games/photo_trivia" class="sidebar-dropdown-link <%= 'active' if action_name == 'photo_trivia' %>">Photo Trivia</a>
-                                <a href="/games/critical_thinking" class="sidebar-dropdown-link <%= 'active' if action_name == 'critical_thinking' %>">Critical Thinking</a>
-                                <a href="/games/lets_talk" class="sidebar-dropdown-link <%= 'active' if action_name == 'lets_talk' %>">Let's Talk</a>
+                                <a href="/games/crossword" class="sidebar-dropdown-link">Crossword</a>
+                                <a href="/games/missing_word" class="sidebar-dropdown-link">Missing Word</a>
+                                <a href="/games/tic_tac_toe" class="sidebar-dropdown-link">Tic-Tac-Toe</a>
+                                <a href="/games/word_search" class="sidebar-dropdown-link">Word Search</a>
+                                <a href="/games/create_a_story" class="sidebar-dropdown-link">Create a Story</a>
+                                <a href="/games/photo_trivia" class="sidebar-dropdown-link">Photo Trivia</a>
+                                <a href="/games/critical_thinking" class="sidebar-dropdown-link">Critical Thinking</a>
+                                <a href="/games/lets_talk" class="sidebar-dropdown-link">Let's Talk</a>
+                                <a href="#" class="sidebar-dropdown-link">Daily Sudoku</a>
                             </div>
                         </li>
                     </ul>
@@ -128,7 +151,7 @@
                     </div>
                     <ul class="sidebar-menu">
                         <li>
-                            <a href="<%= today_daily_journals_path %>" class="sidebar-link <%= 'active' if controller_name == 'daily_journals' %>">
+                            <a href="/daily_journals/today" class="sidebar-link">
                                 <span>✍️</span> Keep Journal
                             </a>
                         </li>
@@ -145,16 +168,222 @@
 
             <!-- Center Content Area -->
             
-          <%= yield %>
+          <!-- BEGIN app/views/daily_journals/today.html.erb
+--><main class="app-content">
+<div style="max-width: 900px; margin: 0 auto; padding: 2rem 1rem; width: 100%;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+      <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--color-text-main); margin: 0;">Daily Journal</h1>
+      <p style="font-size: 1.1rem; color: var(--color-text-muted); margin: 0.5rem 0 0 0;">
+        Sunday, August 16, 2026
+      </p>
+    </div>
+    <div>
+      <a href="/daily_journals" class="btn btn-outline" style="border-radius: 50px; font-weight: 600;">
+        Journal History
+      </a>
+    </div>
+  </div>
+
+  <form id="daily-journal-form" action="/daily_journals" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="L3YuFPfE7kS30ylrAOC6WCbfcIseNm1hQGIqXgJ_k58ivSeV4YE4I-4AW5vthJW0sFyQ0H3ufXMJMUlf-5TuEw" />
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+      
+      
+        <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 2.5rem; background: var(--color-bg); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+              🏋️
+            </div>
+            <div>
+              <h3 style="margin: 0; font-size: 1.25rem; color: var(--color-text-main); font-weight: 600;">Exercise of the day</h3>
+              <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted);">Get your body moving.</p>
+            </div>
+          </div>
+          
+          <div style="position: relative;">
+            <label style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              <span>Add new thoughts:</span>
+              <span id="counter-exercise" style="color: var(--color-text-muted);">
+                0 / 200
+              </span>
+            </label>
+            <textarea class="text-input journal-textarea" placeholder="Write about this activity..." rows="3" maxlength="200" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 1rem; background: var(--color-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--color-border);" data-counter-id="counter-exercise" name="exercise" id="exercise">
+</textarea>
+          </div>
+
+        </div>
+        <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 2.5rem; background: var(--color-bg); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+              📖
+            </div>
+            <div>
+              <h3 style="margin: 0; font-size: 1.25rem; color: var(--color-text-main); font-weight: 600;">Read a book</h3>
+              <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted);">Dive into a good story.</p>
+            </div>
+          </div>
+          
+          <div style="position: relative;">
+            <label style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              <span>Add new thoughts:</span>
+              <span id="counter-book" style="color: var(--color-text-muted);">
+                0 / 200
+              </span>
+            </label>
+            <textarea class="text-input journal-textarea" placeholder="Write about this activity..." rows="3" maxlength="200" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 1rem; background: var(--color-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--color-border);" data-counter-id="counter-book" name="book" id="book">
+</textarea>
+          </div>
+
+        </div>
+        <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 2.5rem; background: var(--color-bg); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+              📰
+            </div>
+            <div>
+              <h3 style="margin: 0; font-size: 1.25rem; color: var(--color-text-main); font-weight: 600;">Read news</h3>
+              <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted);">Stay updated with the world.</p>
+            </div>
+          </div>
+          
+          <div style="position: relative;">
+            <label style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              <span>Add new thoughts:</span>
+              <span id="counter-news" style="color: var(--color-text-muted);">
+                0 / 200
+              </span>
+            </label>
+            <textarea class="text-input journal-textarea" placeholder="Write about this activity..." rows="3" maxlength="200" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 1rem; background: var(--color-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--color-border);" data-counter-id="counter-news" name="news" id="news">
+</textarea>
+          </div>
+
+        </div>
+        <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 2.5rem; background: var(--color-bg); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+              🎨
+            </div>
+            <div>
+              <h3 style="margin: 0; font-size: 1.25rem; color: var(--color-text-main); font-weight: 600;">Hobby</h3>
+              <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted);">Spend time on what you love.</p>
+            </div>
+          </div>
+          
+          <div style="position: relative;">
+            <label style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              <span>Add new thoughts:</span>
+              <span id="counter-hobby" style="color: var(--color-text-muted);">
+                0 / 200
+              </span>
+            </label>
+            <textarea class="text-input journal-textarea" placeholder="Write about this activity..." rows="3" maxlength="200" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 1rem; background: var(--color-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--color-border);" data-counter-id="counter-hobby" name="hobby" id="hobby">
+</textarea>
+          </div>
+
+        </div>
+        <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 2.5rem; background: var(--color-bg); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+              🎬
+            </div>
+            <div>
+              <h3 style="margin: 0; font-size: 1.25rem; color: var(--color-text-main); font-weight: 600;">Watch movie</h3>
+              <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted);">Enjoy a film or show.</p>
+            </div>
+          </div>
+          
+          <div style="position: relative;">
+            <label style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              <span>Add new thoughts:</span>
+              <span id="counter-movie" style="color: var(--color-text-muted);">
+                0 / 200
+              </span>
+            </label>
+            <textarea class="text-input journal-textarea" placeholder="Write about this activity..." rows="3" maxlength="200" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 1rem; background: var(--color-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--color-border);" data-counter-id="counter-movie" name="movie" id="movie">
+</textarea>
+          </div>
+
+        </div>
+        <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 2.5rem; background: var(--color-bg); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+              🎲
+            </div>
+            <div>
+              <h3 style="margin: 0; font-size: 1.25rem; color: var(--color-text-main); font-weight: 600;">Perform games</h3>
+              <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted);">Have fun with some games.</p>
+            </div>
+          </div>
+          
+          <div style="position: relative;">
+            <label style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              <span>Add new thoughts:</span>
+              <span id="counter-games" style="color: var(--color-text-muted);">
+                0 / 200
+              </span>
+            </label>
+            <textarea class="text-input journal-textarea" placeholder="Write about this activity..." rows="3" maxlength="200" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 1rem; background: var(--color-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--color-border);" data-counter-id="counter-games" name="games" id="games">
+</textarea>
+          </div>
+
+        </div>
+        <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 2.5rem; background: var(--color-bg); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+              ☕
+            </div>
+            <div>
+              <h3 style="margin: 0; font-size: 1.25rem; color: var(--color-text-main); font-weight: 600;">Invite people over</h3>
+              <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted);">Host some wonderful company.</p>
+            </div>
+          </div>
+          
+          <div style="position: relative;">
+            <label style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
+              <span>Add new thoughts:</span>
+              <span id="counter-invite" style="color: var(--color-text-muted);">
+                0 / 200
+              </span>
+            </label>
+            <textarea class="text-input journal-textarea" placeholder="Write about this activity..." rows="3" maxlength="200" style="width: 100%; box-sizing: border-box; resize: vertical; font-size: 1rem; background: var(--color-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--color-border);" data-counter-id="counter-invite" name="invite" id="invite">
+</textarea>
+          </div>
+
+        </div>
+      
+    </div>
+
+    <div style="margin-top: 2.5rem; text-align: right;">
+      <button type="submit" class="btn btn-primary" style="padding: 1rem 3rem; border-radius: 50px; font-size: 1.1rem; font-weight: 600; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);">
+        Save Journal
+      </button>
+    </div>
+</form></div>
+
+<script>
+  document.addEventListener("turbo:load", () => {
+    const textareas = document.querySelectorAll('.journal-textarea');
+    textareas.forEach(ta => {
+      ta.addEventListener('input', (e) => {
+        const counterId = e.target.getAttribute('data-counter-id');
+        const counter = document.getElementById(counterId);
+        if (counter) {
+          counter.textContent = `${e.target.value.length} / 200`;
+        }
+      });
+    });
+  });
+</script>
+</main>
+<!-- END app/views/daily_journals/today.html.erb -->
 
 
         <!-- Premium Dark Footer -->
 
     </div>
 
-    <% @main_user = MainUser.first %>
     <script id="backend-profile-data" type="application/json">
-        <%= raw(@main_user&.profile_data&.to_json || '{}') %>
+        {"inputs":{"prof_dob":"1942-03-15","prof_pets":"","prof_career":"Education \u0026 Teaching","prof_languages":"","prof_last_name":"Smith","prof_life_desc":"Grew up in Chicago. Dedicated my life to education and inspiring young minds. Passionate about classical music and baking.","prof_experience":"High school history teacher for 35 years.","prof_first_name":"Margaret","prof_middle_name":"","prof_exercise_type":""},"radios":{"sex":"Female","living":"Own home","marital":"Widowed","exercise":"Regular"},"dashboard":{"inputs":{"prof_dob":"1942-03-15","prof_pets":"","prof_career":"Education \u0026 Teaching","prof_languages":"","prof_last_name":"Smith","prof_life_desc":"Grew up in Chicago. Dedicated my life to education and inspiring young minds. Passionate about classical music and baking.","prof_experience":"High school history teacher for 35 years.","prof_first_name":"Margaret","prof_middle_name":"","prof_exercise_type":""},"radios":{"sex":"Female","living":"Own home","marital":"Widowed","exercise":"Regular"},"checkboxes":{"support":["Children"],"interest":["Reading","History"]}},"checkboxes":{"support":["Children"],"interest":["Reading","History"]}}
     </script>
     
     <!-- User Profile Questionnaire Modal -->
@@ -578,3 +807,4 @@
 
 </body>
 </html>
+<!-- END app/views/layouts/application.html.erb -->

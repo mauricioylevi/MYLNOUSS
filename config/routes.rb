@@ -39,4 +39,11 @@ Rails.application.routes.draw do
       get :today
     end
   end
+
+  resources :guests, only: [:index, :new, :create] do
+    collection do
+      post :generate_main_user_token
+    end
+  end
+  resources :guest_registrations, only: [:new, :create]
 end
