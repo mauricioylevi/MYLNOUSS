@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   get "public/site"
-  root "dashboard#index"
+  get 'dashboard', to: 'dashboard#index'
   resources :photos, only: [:index, :create, :update, :destroy] do
     collection do
       get :drafts
@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   # Reports
   get 'reports/guest_access', to: 'reports#guest_access'
   get 'reports/wellness', to: 'reports#wellness'
+  get 'reports/log_report', to: 'reports#log_report'
 
   post 'api/analytics/log_event', to: 'analytics#log_event'
 

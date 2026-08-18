@@ -48,4 +48,37 @@ class ReportsController < ApplicationController
     @total_guests = Guest.count
     @guests_remaining = [@max_guests - @total_guests, 0].max
   end
+
+  def log_report
+    # Calculate logins for today and YTD
+    today = Date.today
+    start_of_year = today.beginning_of_year
+
+    # Helper lambda to get counts
+    get_counts = ->(u_type, g_id = nil) do
+      query = UserLogin.where(user_type: u_type)
+      query = query.where(guest_id: g_id) if g_id
+      
+      {
+        today: query.where('created_at >= ?', today.beginning_of_day).count,
+        ytd: query.where('created_at >= ?', start_of_year).count
+      }
+    end
+
+    @log_data = []
+    
+    # Admin
+    admin_counts = get_counts.call('Admin')
+    @log_data << { name: 'Admin', type: 'Admin', today: admin_counts[:today], ytd: admin_counts[:ytd] }
+
+    # Main User
+    main_user_counts = get_counts.call('Main User')
+    @log_data << { name: 'Main User', type: 'Main User', today: main_user_counts[:today], ytd: main_user_counts[:ytd] }
+
+    # Guests
+    Guest.all.each do |guest|
+      guest_counts = get_counts.call('Guest', guest.id)
+      @log_data << { name: guest.name, type: 'Guest', today: guest_counts[:today], ytd: guest_counts[:ytd] }
+    end
+  end
 end

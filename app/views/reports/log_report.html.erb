@@ -1,0 +1,66 @@
+<main class="app-content">
+<div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; width: 100%;">
+  <div style="margin-bottom: 2.5rem; text-align: center;">
+    <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--color-text-main); margin: 0;">Log Report</h1>
+    <p style="font-size: 1.1rem; color: var(--color-text-muted); margin: 0.5rem 0 0 0;">System access logs for all users.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+    
+    <!-- Today's Logins Card -->
+    <div style="background: var(--color-surface); border-radius: 16px; padding: 2rem; border: 1px solid var(--color-border); box-shadow: var(--shadow-sm);">
+      <h3 style="color: var(--color-text-main); font-size: 1.25rem; margin-top: 0; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-border); padding-bottom: 0.75rem;">
+        Today's Logins
+      </h3>
+      
+      <% if @log_data.sum { |d| d[:today] } == 0 %>
+        <p style="color: var(--color-text-muted); text-align: center; padding: 2rem 0;">No logins recorded today.</p>
+      <% else %>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <% @log_data.sort_by { |d| -d[:today] }.each do |data| %>
+            <% if data[:today] > 0 %>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--color-bg); border-radius: 8px; border: 1px solid var(--color-border);">
+                <div>
+                  <span style="display: block; color: var(--color-text-main); font-weight: 700; font-size: 1.1rem;"><%= data[:name] %></span>
+                  <span style="display: block; font-size: 0.85rem; color: var(--color-text-muted);"><%= data[:type] %></span>
+                </div>
+                <div style="font-size: 1.5rem; font-weight: 900; color: var(--color-primary);">
+                  <%= data[:today] %>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- YTD Logins Card -->
+    <div style="background: var(--color-surface); border-radius: 16px; padding: 2rem; border: 1px solid var(--color-border); box-shadow: var(--shadow-sm);">
+      <h3 style="color: var(--color-text-main); font-size: 1.25rem; margin-top: 0; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-border); padding-bottom: 0.75rem;">
+        Year-to-Date Logins
+      </h3>
+      
+      <% if @log_data.sum { |d| d[:ytd] } == 0 %>
+        <p style="color: var(--color-text-muted); text-align: center; padding: 2rem 0;">No logins recorded this year.</p>
+      <% else %>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <% @log_data.sort_by { |d| -d[:ytd] }.each do |data| %>
+            <% if data[:ytd] > 0 %>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--color-bg); border-radius: 8px; border: 1px solid var(--color-border);">
+                <div>
+                  <span style="display: block; color: var(--color-text-main); font-weight: 700; font-size: 1.1rem;"><%= data[:name] %></span>
+                  <span style="display: block; font-size: 0.85rem; color: var(--color-text-muted);"><%= data[:type] %></span>
+                </div>
+                <div style="font-size: 1.5rem; font-weight: 900; color: #8B5CF6;">
+                  <%= data[:ytd] %>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+  </div>
+</div>
+</main>

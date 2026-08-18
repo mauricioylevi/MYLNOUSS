@@ -1,0 +1,66 @@
+:root {
+    /* Color Palette */
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f8fafc;
+    --color-bg-gradient-start: #eef2ff;
+    --color-bg-gradient-end: #ffffff;
+    
+    --color-text-main: #0f172a;
+    --color-text-muted: #475569;
+    
+    --color-primary: #10b981;
+    --color-primary-hover: #059669;
+    --color-primary-light: #d1fae5;
+    
+    --color-card-bg: #ffffff;
+    --color-border: #e2e8f0;
+    
+    /* Typography */
+    --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    
+    /* Spacing & Layout */
+    --spacing-1: 0.25rem;
+    --spacing-2: 0.5rem;
+    --spacing-3: 0.75rem;
+    --spacing-4: 1rem;
+    --spacing-6: 1.5rem;
+    --spacing-8: 2rem;
+    --spacing-12: 3rem;
+    
+    --layout-sidebar-width: 280px;
+    --layout-navbar-height: 65px;
+    
+    /* Radii */
+    --radius-md: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-full: 9999px;
+    
+    /* Transitions */
+    --transition-fast: 150ms ease-in-out;
+    --transition-normal: 300ms ease;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-bg-primary: #0f172a;
+        --color-bg-secondary: #1e293b;
+        --color-bg-gradient-start: #1e1b4b;
+        --color-bg-gradient-end: #0f172a;
+        
+        --color-text-main: #f8fafc;
+        --color-text-muted: #94a3b8;
+        
+        --color-primary: #34d399;
+        --color-primary-hover: #6ee7b7;
+        --color-primary-light: #064e3b;
+        
+        --color-card-bg: #1e293b;
+        --color-border: #334155;
+    }
+}

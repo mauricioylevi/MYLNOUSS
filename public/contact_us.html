@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - MYLNOUSS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/design-tokens.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Upper Navigation Bar -->
+        <header class="navbar">
+            <div class="navbar-container">
+                <a href="/" class="navbar-brand">
+                    <span class="navbar-logo">🍃</span>
+                    <span class="navbar-title">MYLNOUSS</span>
+                </a>
+                <nav class="navbar-menu">
+                    <a href="index.html#about-us" class="navbar-link">Our Story</a>
+                    <a href="index.html#features" class="navbar-link">Features</a>
+                    <a href="pricing.html" class="navbar-link">Pricing</a>
+                    <a href="index.html#qa" class="navbar-link">Q&A</a>
+                    <a href="index.html#our-mission" class="navbar-link">Our Mission</a>
+                    <a href="contact_us.html" class="navbar-link">Contact Us</a>
+                    <a href="/dashboard" class="btn btn-outline navbar-btn">Sign In</a>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main-content" style="background-color: var(--color-bg-primary); min-height: calc(100vh - 65px);">
+            <div class="landing-section">
+                <div class="landing-container">
+                    <div class="section-header">
+                        <h1 class="section-title">Contact Us</h1>
+                        <div class="section-divider"></div>
+                        <p class="section-subtitle">Have questions? Get in touch with the support team.</p>
+                    </div>
+
+                    <form class="contact-form" action="#" method="POST" onsubmit="event.preventDefault(); alert('Form submitted natively via MYLNOUSS!');">
+                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                            <div class="form-group" style="flex: 1; min-width: 200px;">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div class="form-group" style="flex: 1; min-width: 200px;">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Phone (Optional)</label>
+                            <input type="tel" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Message</label>
+                            <textarea class="form-control" rows="5" required style="resize: vertical;"></textarea>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 2rem;">
+                            <button type="submit" class="btn btn-primary" style="padding: 1rem 3rem;">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

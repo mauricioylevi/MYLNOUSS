@@ -79,12 +79,17 @@
                     <ul class="sidebar-menu">
                         <li>
                             <a href="<%= reports_guest_access_path %>" class="sidebar-link <%= 'active' if controller_name == 'reports' && action_name == 'guest_access' %>">
-                                <span>📊</span> Guest Access Report
+                                <span>📊</span> Guest Report
                             </a>
                         </li>
                         <li>
                             <a href="<%= reports_wellness_path %>" class="sidebar-link <%= 'active' if controller_name == 'reports' && action_name == 'wellness' %>">
-                                <span>📈</span> Wellness Report
+                                <span>📈</span> Usage Report
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<%= reports_log_report_path %>" class="sidebar-link <%= 'active' if controller_name == 'reports' && action_name == 'log_report' %>">
+                                <span>📅</span> Log Report
                             </a>
                         </li>
                     </ul>
