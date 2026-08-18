@@ -28,6 +28,21 @@ class GuestsController < ApplicationController
     redirect_to guests_path, notice: "Main User access token generated."
   end
 
+  def update
+    @guest = Guest.find(params[:id])
+    if @guest.update(guest_params)
+      redirect_to guests_path, notice: "Permissions for #{@guest.name} updated successfully."
+    else
+      redirect_to guests_path, alert: "Failed to update permissions for #{@guest.name}."
+    end
+  end
+
+  def destroy
+    @guest = Guest.find(params[:id])
+    @guest.destroy
+    redirect_to guests_path, notice: "Guest #{@guest.name} was successfully removed."
+  end
+
   private
 
   def guest_params

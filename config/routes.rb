@@ -11,6 +11,12 @@ Rails.application.routes.draw do
     end
   end
 
+  # Reports
+  get 'reports/guest_access', to: 'reports#guest_access'
+  get 'reports/wellness', to: 'reports#wellness'
+
+  post 'api/analytics/log_event', to: 'analytics#log_event'
+
   get 'profile', to: 'dashboard#profile'
   post 'profile/update', to: 'dashboard#update_profile'
 
@@ -40,7 +46,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :guests, only: [:index, :new, :create] do
+  resources :guests, only: [:index, :new, :create, :update, :destroy] do
     collection do
       post :generate_main_user_token
     end

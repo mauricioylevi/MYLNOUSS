@@ -1,0 +1,50 @@
+<main class="app-content">
+<div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; width: 100%;">
+  <div style="margin-bottom: 2rem;">
+    <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--color-text-main); margin: 0;">Guest Access Report</h1>
+    <p style="font-size: 1.1rem; color: var(--color-text-muted); margin: 0.5rem 0 0 0;">Review all invited guests and their system permissions.</p>
+  </div>
+
+  <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; box-shadow: var(--shadow-sm); overflow-x: auto;">
+    <% if @guests.empty? %>
+      <p style="color: var(--color-text-muted); text-align: center; padding: 2rem 0; margin: 0;">No guests have been invited yet.</p>
+    <% else %>
+      <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-border);">
+            <th style="padding: 1rem 0.5rem; color: var(--color-text-main); font-weight: 600;">Guest Name</th>
+            <th style="padding: 1rem 0.5rem; color: var(--color-text-main); font-weight: 600;">Email</th>
+            <th style="padding: 1rem 0.5rem; color: var(--color-text-main); font-weight: 600;">Permissions</th>
+            <th style="padding: 1rem 0.5rem; color: var(--color-text-main); font-weight: 600;">Access Granted</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @guests.each do |guest| %>
+            <tr style="border-bottom: 1px solid var(--color-border);">
+              <td style="padding: 1rem 0.5rem; color: var(--color-text-main); font-weight: 500;"><%= guest.name %></td>
+              <td style="padding: 1rem 0.5rem; color: var(--color-text-muted);"><%= guest.email %></td>
+              <td style="padding: 1rem 0.5rem;">
+                <div style="display: flex; gap: 0.25rem; flex-wrap: wrap;">
+                  <% perms = [] %>
+                  <% perms << 'Post Photos' if guest.can_post_photos %>
+                  <% perms << 'Play Games' if guest.can_play_games %>
+                  <% perms << 'Read Journals' if guest.can_read_journals %>
+                  
+                  <% if perms.empty? %>
+                    <span style="color: var(--color-text-muted); font-style: italic;">None</span>
+                  <% else %>
+                    <span style="color: var(--color-text-main);"><%= perms.join(', ') %></span>
+                  <% end %>
+                </div>
+              </td>
+              <td style="padding: 1rem 0.5rem; color: var(--color-text-muted);">
+                <%= guest.created_at.strftime("%B %d, %Y") %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>
+</main>

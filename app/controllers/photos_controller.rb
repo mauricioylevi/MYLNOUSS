@@ -27,6 +27,7 @@ class PhotosController < ApplicationController
 
   def create
     @photo = Photo.new(status: 'draft')
+    @photo.author_type = session[:guest_id].present? ? 'Guest' : 'Admin'
     
     if params[:image].present?
       @photo.image.attach(params[:image])

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_17_234600) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_18_142600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -62,6 +62,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_234600) do
     t.index ["main_user_id"], name: "index_game_caches_on_main_user_id"
   end
 
+  create_table "game_events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "event_type"
+    t.string "game_name"
+    t.bigint "main_user_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["main_user_id"], name: "index_game_events_on_main_user_id"
+  end
+
   create_table "guests", force: :cascade do |t|
     t.boolean "can_play_games", default: false
     t.boolean "can_post_photos", default: false
@@ -83,6 +92,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_234600) do
   end
 
   create_table "photos", force: :cascade do |t|
+    t.string "author_type", default: "Admin"
     t.datetime "created_at", null: false
     t.text "description"
     t.string "status"
@@ -93,4 +103,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_234600) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "daily_journals", "main_users"
   add_foreign_key "game_caches", "main_users"
+  add_foreign_key "game_events", "main_users"
 end

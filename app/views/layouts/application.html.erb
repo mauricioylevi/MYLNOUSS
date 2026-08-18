@@ -74,17 +74,17 @@
                 <!-- Features Block -->
                 <div class="sidebar-block">
                     <div class="sidebar-block-title">
-                        <span>🧩</span> Core Modules
+                        <span>🧩</span> Reports
                     </div>
                     <ul class="sidebar-menu">
                         <li>
-                            <a href="#" class="sidebar-link">
-                                <span>🎮</span> Module Launcher
+                            <a href="<%= reports_guest_access_path %>" class="sidebar-link <%= 'active' if controller_name == 'reports' && action_name == 'guest_access' %>">
+                                <span>📊</span> Guest Access Report
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="sidebar-link">
-                                <span>📓</span> Journal History
+                            <a href="<%= reports_wellness_path %>" class="sidebar-link <%= 'active' if controller_name == 'reports' && action_name == 'wellness' %>">
+                                <span>📈</span> Wellness Report
                             </a>
                         </li>
                     </ul>
@@ -97,7 +97,7 @@
                     </div>
                     <ul class="sidebar-menu">
                         <li>
-                            <a href="#" class="sidebar-link <%= 'active' if controller_name == 'games' %>" onclick="toggleSidebarDropdown(event, 'games-dropdown', 'games-arrow')">
+                            <a href="#" class="sidebar-link" onclick="toggleSidebarDropdown(event, 'games-dropdown', 'games-arrow')">
                                 <span>🧩</span> Enjoy Games
                                 <span class="dropdown-arrow" id="games-arrow">▼</span>
                             </a>
@@ -126,8 +126,13 @@
                     </div>
                     <ul class="sidebar-menu">
                         <li>
-                            <a href="<%= today_daily_journals_path %>" class="sidebar-link <%= 'active' if controller_name == 'daily_journals' %>">
+                            <a href="<%= today_daily_journals_path %>" class="sidebar-link <%= 'active' if controller_name == 'daily_journals' && action_name == 'today' %>">
                                 <span>✍️</span> Keep Journal
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<%= daily_journals_path %>" class="sidebar-link <%= 'active' if controller_name == 'daily_journals' && (action_name == 'index' || action_name == 'show') %>">
+                                <span>📓</span> Journal History
                             </a>
                         </li>
                     </ul>

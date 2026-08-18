@@ -67,15 +67,23 @@
 </main>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        // Automatically start the crossword on this page load
-        if (typeof startCrossword === 'function') {
-            startCrossword('easy');
+    (function() {
+        const init = () => {
+            if (document.getElementById('crossword-game-screen')) {
+                if (typeof startCrossword === 'function') {
+                    startCrossword('easy');
+                } else {
+                    setTimeout(() => {
+                        if (typeof startCrossword === 'function') startCrossword('easy');
+                    }, 100);
+                }
+            }
+        };
+        document.addEventListener("turbo:load", init, { once: true });
+        if (document.readyState === "complete" || document.readyState === "interactive") {
+            init();
         } else {
-            // Wait slightly if js takes a moment to load
-            setTimeout(() => {
-                if (typeof startCrossword === 'function') startCrossword('easy');
-            }, 100);
+            document.addEventListener("DOMContentLoaded", init);
         }
-    });
+    })();
 </script>

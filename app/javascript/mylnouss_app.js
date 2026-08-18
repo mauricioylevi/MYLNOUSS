@@ -9,6 +9,17 @@ window.initApp = function() {
     fetchPhotoFingerprints(); // Ensure duplicate registry is populated on load
 };
 
+window.logGameEvent = function(gameName, eventType) {
+    fetch('/api/analytics/log_event', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || ''
+        },
+        body: JSON.stringify({ game_name: gameName, event_type: eventType })
+    }).catch(e => console.error("Telemetry error", e));
+};
+
 document.addEventListener('turbo:load', window.initApp);
 document.addEventListener('DOMContentLoaded', window.initApp);
 
@@ -929,6 +940,7 @@ window.closeProfileQuizModal = function(e) {
 };
 
 window.startProfileQuiz = async function() {
+    window.logGameEvent('Picturez Quiz', 'started');
     const loadingState = document.getElementById('quiz-loading-state');
     const gameState = document.getElementById('quiz-game-state');
     const endState = document.getElementById('quiz-end-state');
@@ -964,6 +976,7 @@ window.renderNextQuizRound = function() {
     if (window.currentQuizQueue.length === 0) {
         gameState.style.display = 'none';
         endState.style.display = 'block';
+        window.logGameEvent('Picturez Quiz', 'completed');
         return;
     }
     
@@ -1059,6 +1072,7 @@ window.pmEndMemoryPhase = function() {
 };
 
 window.startPhotoMemory = async function() {
+    window.logGameEvent('Photo Memory', 'started');
     if (window.isFetchingPhotoMemory) return;
     window.isFetchingPhotoMemory = true;
     
@@ -1098,6 +1112,7 @@ window.pmStartMemoryPhase = function() {
         document.getElementById('pm-quiz-state').style.display = 'none';
         document.getElementById('pm-end-state').style.display = 'flex';
         document.getElementById('pm-final-score').innerText = `You got ${window.pmScore} out of ${window.pmRounds.length} correct!`;
+        window.logGameEvent('Photo Memory', 'completed');
         return;
     }
     
@@ -1190,6 +1205,7 @@ window.closeCardsMatchModal = function() {
 };
 
 window.startCardsMatch = async function(difficulty) {
+    window.logGameEvent('Cards Match', 'started');
     window.cmState.currentDifficulty = difficulty;
 
     document.getElementById('cards-match-game-screen').style.display = 'none';
@@ -1374,6 +1390,7 @@ window.cmEndGame = function() {
     setTimeout(() => {
         document.getElementById('cards-match-game-screen').style.display = 'none';
         document.getElementById('cards-match-end-screen').style.display = 'flex';
+        window.logGameEvent('Cards Match', 'completed');
     }, 1000);
 };
 
@@ -1392,6 +1409,7 @@ window.cwState = {
 };
 
 window.startCrossword = async function(difficulty) {
+    window.logGameEvent('Crossword', 'started');
     window.cwState.currentDifficulty = difficulty;
     
     document.getElementById('crossword-game-screen').style.display = 'none';
@@ -1465,7 +1483,7 @@ window.generateCrosswordLayout = function(rawWords) {
         wordObj.x = startX;
         wordObj.y = startY;
         wordObj.isHorizontal = isHoriz;
-        wordObj.number = placedWords.length + 1;
+        // number will be assigned later
         
         for(let i=0; i<wordObj.word.length; i++) {
             let cx = isHoriz ? startX + i : startX;
@@ -1518,8 +1536,27 @@ window.generateCrosswordLayout = function(rawWords) {
         w.x -= minX;
         w.y -= minY;
     });
+
+    // Assign standard crossword numbers (top-to-bottom, left-to-right)
+    let startMap = {};
+    placedWords.forEach(w => {
+        let key = `${w.x},${w.y}`;
+        if (!startMap[key]) startMap[key] = [];
+        startMap[key].push(w);
+    });
+
+    let sortedStarts = Object.keys(startMap).sort((a, b) => {
+        let [ax, ay] = a.split(',').map(Number);
+        let [bx, by] = b.split(',').map(Number);
+        if (ay === by) return ax - bx;
+        return ay - by;
+    });
+
+    sortedStarts.forEach((key, index) => {
+        startMap[key].forEach(w => w.number = index + 1);
+    });
     
-    window.cwState.words = placedWords;
+    window.cwState.words = placedWords.sort((a, b) => a.number - b.number);
     window.cwState.width = maxX - minX + 1;
     window.cwState.height = maxY - minY + 1;
     
@@ -1707,6 +1744,7 @@ window.checkCrosswordVictory = function() {
     if (allCorrect && allFilled && Object.keys(window.cwState.inputs).length > 0) {
         document.getElementById('crossword-game-screen').style.display = 'none';
         document.getElementById('crossword-end-screen').style.display = 'flex';
+        window.logGameEvent('Crossword', 'completed');
     }
 };
 
@@ -1939,6 +1977,7 @@ window.initTicTacToePage = function() {
 };
 
 window.startTicTacToe = function(mode) {
+    window.logGameEvent('Tic Tac Toe', 'started');
     window.ticTacToeMode = mode;
     window.ticTacToeBoard = ['', '', '', '', '', '', '', '', ''];
     window.ticTacToeCurrentPlayer = 'X';
