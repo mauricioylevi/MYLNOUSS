@@ -12,6 +12,8 @@ class DashboardController < ApplicationController
     end
   end
 
+  def profile
+  end
   def update_profile
     @user = MainUser.first || MainUser.new
     @user.profile_data = params.permit!.to_h.except("controller", "action")

@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'profile', to: 'dashboard#profile'
   post 'profile/update', to: 'dashboard#update_profile'
 
   # Games

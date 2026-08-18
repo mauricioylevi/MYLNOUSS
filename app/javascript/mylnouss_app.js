@@ -12,14 +12,17 @@ window.initApp = function() {
 document.addEventListener('turbo:load', window.initApp);
 document.addEventListener('DOMContentLoaded', window.initApp);
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('MYLNOUSS application initialized successfully.');
+function initPageSetup() {
+    console.log('MYLNOUSS page setup initialized.');
     
     // Add event listeners for selection cards to toggle 'selected' class visually
     const selectionInputs = document.querySelectorAll('.selection-card input');
     selectionInputs.forEach(input => {
+        // Prevent double binding if already initialized
+        if(input.dataset.initialized) return;
+        input.dataset.initialized = "true";
+        
         input.addEventListener('change', function() {
-            // If it's a radio button, clear 'selected' from other cards in the same group
             if (this.type === 'radio') {
                 const groupName = this.name;
                 const siblings = document.querySelectorAll(`input[name="${groupName}"]`);
@@ -27,8 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     sibling.closest('.selection-card').classList.remove('selected');
                 });
             }
-            
-            // Toggle current card
             if (this.checked) {
                 this.closest('.selection-card').classList.add('selected');
             } else {
@@ -44,19 +45,24 @@ document.addEventListener('DOMContentLoaded', () => {
         modalBody.addEventListener('change', () => { hasUnsavedChanges = true; });
     }
     
-    // Load existing profile data if available
-    loadProfileData();
-});
+    // Initialize Questionnaire on Profile Page
+    if (document.getElementById('questionnaire-modal')) {
+        hasUnsavedChanges = false;
+        loadProfileData();
+        
+        // Re-apply visual selection class based on loaded data
+        document.querySelectorAll('.selection-card input:checked').forEach(input => {
+            input.closest('.selection-card').classList.add('selected');
+        });
+        
+        updateQuestionnaireView();
+    }
+}
 
-// Open Questionnaire Modal
-window.openProfileQuestionnaire = function(e) {
-    if(e) e.preventDefault();
-    document.getElementById('questionnaire-modal').classList.add('active');
-    hasUnsavedChanges = false; // reset tracking when opening
-    updateQuestionnaireView();
-};
+document.addEventListener('turbo:load', initPageSetup);
+document.addEventListener('DOMContentLoaded', initPageSetup);
 
-// Close Questionnaire Modal
+// Close Profile (Return to Dashboard)
 window.closeProfileQuestionnaire = function() {
     if (hasUnsavedChanges) {
         const wantToSave = confirm("You have unsaved changes. Would you like to save them before exiting?");
@@ -65,11 +71,7 @@ window.closeProfileQuestionnaire = function() {
             alert("Profile successfully saved locally in MYLNOUSS!");
         }
     }
-    document.getElementById('questionnaire-modal').classList.remove('active');
-    
-    // Reset to step 1 for the next time it opens
-    currentStep = 1;
-    hasUnsavedChanges = false;
+    window.location.href = '/';
 };
 
 // Handle top bar save button
@@ -77,7 +79,7 @@ window.handleGlobalSave = function() {
     saveProfileData();
     hasUnsavedChanges = false;
     alert("Profile successfully saved locally in MYLNOUSS!");
-    closeProfileQuestionnaire(); // Go back to main menu
+    window.location.href = '/';
 };
 
 // Toggle Sidebar Dropdowns
