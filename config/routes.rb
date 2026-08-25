@@ -53,4 +53,8 @@ Rails.application.routes.draw do
     end
   end
   resources :guest_registrations, only: [:new, :create]
+
+  namespace :api do
+    resources :contact_messages, only: [:create]
+  end
 end

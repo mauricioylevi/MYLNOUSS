@@ -63,6 +63,13 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem "simplecov", require: false
+  gem "mocha", require: false
 end
 
 gem "bcrypt", "~> 3.1"
+
+gem "sendgrid-ruby", "~> 6.7"
+gem "rack-cors", "~> 3.0"
+
+gem "dotenv-rails", "~> 3.2"
