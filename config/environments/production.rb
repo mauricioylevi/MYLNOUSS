@@ -1,6 +1,12 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+  # Ensure secret_key_base is always present, preventing boot crashes if SECRET_KEY_BASE env is missing
+  config.secret_key_base = ENV["SECRET_KEY_BASE"].presence || 
+                           Rails.application.credentials.secret_key_base.presence || 
+                           ENV["RAILS_MASTER_KEY"].presence || 
+                           "fallback_secret_key_base_#{Rails.env}_#{Digest::SHA256.hexdigest(Rails.root.to_s)}"
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
