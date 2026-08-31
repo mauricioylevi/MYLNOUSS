@@ -1,69 +1,65 @@
-<main class="app-content" style="padding: 3rem 2rem;">
-  <div style="max-width: 700px; margin: 0 auto; width: 100%;">
-    <div style="text-align: left; margin-bottom: 3rem;">
-        <h1 style="font-size: 2.5rem; font-weight: 800; margin: 0 0 1rem 0; color: var(--color-text-main);">Welcome to MYLNOUSS</h1>
-        <p style="font-size: 1.1rem; color: var(--color-text-muted); margin: 0;">
-          Here is a quick overview of what you can expect from each menu item on the left:
-        </p>
-    </div>
-
-    <div style="display: flex; flex-direction: column; gap: 2rem;">
+<main class="app-content" style="padding: 3rem 2rem; background: var(--color-bg-canvas); min-height: 100%; display: flex; align-items: center; justify-content: center;">
+  <div style="max-width: 740px; width: 100%;">
+    
+    <!-- Clean, Welcoming Hero Panel (Black Outline & High Relief) -->
+    <div style="background: #ffffff; border: 2.5px solid #000000; border-radius: var(--radius-xl); padding: 3rem 2.5rem; box-shadow: 5px 5px 0px #000000; text-align: center;">
       
-      <div>
-        <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: var(--color-text-main);"><span>👥</span> User Profile</h3>
-        <p style="margin: 0; font-size: 1rem; color: var(--color-text-muted); line-height: 1.5;">Manage personal information and customize the experience for the Main User.</p>
+      <!-- Comforting Emblem Badge -->
+      <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 1.1rem; background: #dcfce7; color: #065f46; font-size: 0.88rem; font-weight: 800; border-radius: var(--radius-full); border: 2px solid #000000; box-shadow: 2px 2px 0px #000000; margin-bottom: 1.5rem;">
+        <span>🍃</span> Memory & Wellness Companion
       </div>
 
-      <div>
-        <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: var(--color-text-main);"><span>📸</span> Post Photos</h3>
-        <p style="margin: 0; font-size: 1rem; color: var(--color-text-muted); line-height: 1.5;">Upload and curate family photos to be used in games and the photo gallery.</p>
+      <h1 style="font-size: 2.5rem; font-weight: 900; margin: 0 0 1rem 0; color: #000000; letter-spacing: -0.5px;">
+        Welcome to MYLNOUSS
+      </h1>
+      
+      <p style="font-size: 1.15rem; color: #334155; margin: 0 auto 2rem auto; line-height: 1.6; max-width: 600px; font-weight: 500;">
+        A friendly, reassuring space to celebrate cherished memories, stay connected with loved ones, and keep your mind active with relaxing games.
+      </p>
+
+      <!-- Clear Directional Callout -->
+      <div style="background: #f8fafc; border: 2px solid #000000; border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; box-shadow: 3px 3px 0px #000000; margin-bottom: 2rem; display: inline-flex; align-items: center; gap: 1rem; text-align: left;">
+        <span style="font-size: 2rem;">👈</span>
+        <div>
+          <div style="font-size: 1.05rem; font-weight: 800; color: #000000;">Choose an option on the left to begin</div>
+          <div style="font-size: 0.9rem; color: #475569; font-weight: 600;">Click any category button on the left menu at any time.</div>
+        </div>
       </div>
 
-      <div>
-        <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: var(--color-text-main);"><span>🔒</span> Access Control</h3>
-        <p style="margin: 0; font-size: 1rem; color: var(--color-text-muted); line-height: 1.5;">Generate tokens for the Main User and securely invite family and friends to participate.</p>
-      </div>
+      <!-- Simple Category Guide (Non-confusing, informative legend) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; text-align: left;">
+        
+        <div style="background: #dcfce7; border: 2px solid #000000; border-radius: var(--radius-md); padding: 1rem; box-shadow: 2px 2px 0px #000000;">
+          <div style="font-weight: 800; font-size: 0.95rem; color: #000000; margin-bottom: 0.25rem;">
+            <span>🌿</span> Personal & Family
+          </div>
+          <div style="font-size: 0.85rem; color: #065f46; font-weight: 600;">Photo album, about me details & family access</div>
+        </div>
 
-      <div>
-        <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: var(--color-text-main);"><span>💳</span> Subscription</h3>
-        <p style="margin: 0; font-size: 1rem; color: var(--color-text-muted); line-height: 1.5;">Manage your billing details and review your active subscription plan.</p>
-      </div>
+        <div style="background: #dbeafe; border: 2px solid #000000; border-radius: var(--radius-md); padding: 1rem; box-shadow: 2px 2px 0px #000000;">
+          <div style="font-weight: 800; font-size: 0.95rem; color: #000000; margin-bottom: 0.25rem;">
+            <span>📓</span> My Daily Journal
+          </div>
+          <div style="font-size: 0.85rem; color: #1e40af; font-weight: 600;">Today's thoughts, recordings & past memories</div>
+        </div>
 
-      <div>
-        <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: var(--color-text-main);"><span>📊</span> Guest Report</h3>
-        <p style="margin: 0; font-size: 1rem; color: var(--color-text-muted); line-height: 1.5;">Review all invited guests and securely manage their permissions to post photos, play games, or read journals.</p>
-      </div>
+        <div style="background: #ede9fe; border: 2px solid #000000; border-radius: var(--radius-md); padding: 1rem; box-shadow: 2px 2px 0px #000000;">
+          <div style="font-weight: 800; font-size: 0.95rem; color: #000000; margin-bottom: 0.25rem;">
+            <span>🧩</span> Fun Brain Games
+          </div>
+          <div style="font-size: 0.85rem; color: #5b21b6; font-weight: 600;">13 relaxing memory games & quizzes</div>
+        </div>
 
-      <div>
-        <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: var(--color-text-main);"><span>📈</span> Usage Report</h3>
-        <p style="margin: 0; font-size: 1rem; color: var(--color-text-muted); line-height: 1.5;">Track your ongoing subscription quotas (photos & guests), and review wellness metrics like game completion rates and journaling consistency.</p>
-      </div>
+        <div style="background: #ccfbf1; border: 2px solid #000000; border-radius: var(--radius-md); padding: 1rem; box-shadow: 2px 2px 0px #000000;">
+          <div style="font-weight: 800; font-size: 0.95rem; color: #000000; margin-bottom: 0.25rem;">
+            <span>📊</span> Care & Activity Reports
+          </div>
+          <div style="font-size: 0.85rem; color: #115e59; font-weight: 600;">Wellness summary & security visit logs</div>
+        </div>
 
-      <div>
-        <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: var(--color-text-main);"><span>📅</span> Log Report</h3>
-        <p style="margin: 0; font-size: 1rem; color: var(--color-text-muted); line-height: 1.5;">Transparently monitor system access and session logs across all Admins, Main Users, and Guests.</p>
       </div>
-
-      <div>
-        <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: var(--color-text-main);"><span>🎮</span> Module Launcher</h3>
-        <p style="margin: 0; font-size: 1rem; color: var(--color-text-muted); line-height: 1.5;">Launch the simplified, immersive interface designed specifically for the Main User.</p>
-      </div>
-
-      <div>
-        <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: var(--color-text-main);"><span>🧩</span> Enjoy Games</h3>
-        <p style="margin: 0; font-size: 1rem; color: var(--color-text-muted); line-height: 1.5;">Access a suite of mental agility games like Photo Memory, Crossword, and Word Search.</p>
-      </div>
-
-      <div>
-        <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: var(--color-text-main);"><span>✍️</span> Keep Journal</h3>
-        <p style="margin: 0; font-size: 1rem; color: var(--color-text-muted); line-height: 1.5;">Write a new daily journal entry, capturing thoughts, feelings, and memories.</p>
-      </div>
-
-      <a href="<%= daily_journals_path %>" style="text-decoration: none; display: block; padding: 1rem; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='var(--color-bg-secondary)'" onmouseout="this.style.background='transparent'">
-        <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: var(--color-text-main);"><span>📓</span> Journal History</h3>
-        <p style="margin: 0; font-size: 1rem; color: var(--color-text-muted); line-height: 1.5;">Review past daily journal entries chronologically, grouped by day and time.</p>
-      </a>
 
     </div>
+
   </div>
-</main>
+</main>

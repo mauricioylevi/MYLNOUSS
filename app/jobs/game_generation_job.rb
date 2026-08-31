@@ -85,6 +85,10 @@ class GameGenerationJob < ApplicationJob
     when 'lets_talk'
       prompts = GeminiService.generate_lets_talk_prompts(profile_info)
       payload = { 'prompts' => prompts } if prompts && prompts.any?
+    when 'story_sequence'
+      difficulty ||= 'easy'
+      story = GeminiService.generate_story_sequence_data(difficulty, profile_info)
+      payload = { 'story' => story } if story && story['steps'].present?
     end
 
     if payload

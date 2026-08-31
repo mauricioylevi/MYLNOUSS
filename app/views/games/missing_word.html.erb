@@ -1,47 +1,61 @@
-<main class="app-content">
-  <div style="display: flex; flex-direction: column; height: 100%; background: var(--color-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+<main class="app-content" style="padding: 1rem 1.5rem; height: calc(100vh - 70px); box-sizing: border-box; display: flex; flex-direction: column;">
+  <div style="display: flex; flex-direction: column; height: 100%; background: #ffffff; border: 2px solid #000000; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-relief-md);">
     
     <!-- Header -->
-    <div style="padding: 1.5rem 2rem; border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; background: var(--color-surface);">
+    <header style="padding: 0.65rem 1.5rem; border-bottom: 2px solid #000000; display: flex; justify-content: space-between; align-items: center; background: #ffffff; flex-shrink: 0; gap: 1rem;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 1.6rem; background: #ede9fe; padding: 0.2rem 0.45rem; border-radius: 8px; border: 1.5px solid #000000; box-shadow: 1.5px 1.5px 0px #000000;">🔤</span>
         <div>
-            <h2 style="font-size: 1.8rem; font-weight: 700; color: var(--color-text-main); margin: 0; display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 2rem;">🔤</span> Missing Word
-            </h2>
+          <h2 style="font-size: 1.35rem; font-weight: 900; color: #000000; margin: 0; line-height: 1.2;">
+            Missing Word
+          </h2>
+          <span style="color: var(--color-text-muted); font-size: 0.8rem; font-weight: 600;">
+            Fill in the missing word to complete the sentence
+          </span>
         </div>
-        <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <button onclick="giveMissingWordHint()" class="btn btn-outline" id="missing-word-hint-btn" style="display:none; border-radius: 50px; padding: 0.4rem 1rem; font-size: 0.9rem;">💡 Hint</button>
-            <a href="/" class="btn btn-outline" style="border-radius: 50px; padding: 0.4rem 1rem; font-size: 0.9rem;">&larr; Back to Dashboard</a>
-        </div>
-    </div>
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button onclick="giveMissingWordHint()" class="btn btn-outline btn-compact" id="missing-word-hint-btn" style="display:none; border-radius: 50px; font-weight: 700; border: 1.5px solid #000000;">
+          💡 Hint
+        </button>
+        <a href="/" class="btn btn-outline btn-compact" style="border-radius: 50px; font-weight: 700; border: 1.5px solid #000000;">
+          &larr; Exit
+        </a>
+      </div>
+    </header>
 
-    <!-- Game Container -->
-    <div style="flex: 1; padding: 2rem; display: flex; justify-content: center; align-items: center; position: relative;">
+    <!-- Game Container (Top Aligned) -->
+    <div style="flex: 1; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; position: relative; overflow-y: auto;">
         
         <!-- Loading State -->
-        <div id="missing-word-loading-screen" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+        <div id="missing-word-loading-screen" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-top: 2rem;">
             <div style="font-size: 3rem; animation: spin 2s linear infinite;">⌛</div>
-            <h3 style="margin-top: 1.5rem; color: var(--color-text-main);">Crafting a sentence for you...</h3>
+            <h3 style="margin-top: 1rem; color: #000000; font-size: 1.3rem; font-weight: 900;">Crafting a personalized sentence for you...</h3>
+            <p style="color: #64748b; font-weight: 600;">Connecting with AI...</p>
         </div>
 
-        <!-- Game State -->
+        <!-- Game State (Top Aligned Card) -->
         <div id="missing-word-game-screen" style="display: none; flex-direction: column; align-items: center; max-width: 800px; text-align: center; width: 100%;">
-            <h3 id="missing-word-sentence" style="font-size: 2rem; color: var(--color-text-main); line-height: 1.6; font-weight: 500; margin-bottom: 3rem;">
-                <!-- Sentence injected here -->
-            </h3>
+            <div style="background: #f8fafc; border: 2px solid #000000; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 0px #000000; width: 100%; box-sizing: border-box; margin-bottom: 1.5rem;">
+                <span style="font-size: 0.85rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.5rem;">Complete The Sentence:</span>
+                <h3 id="missing-word-sentence" style="font-size: 1.6rem; color: #000000; line-height: 1.5; font-weight: 800; margin: 0;">
+                    <!-- Sentence injected here -->
+                </h3>
+            </div>
             
-            <div id="missing-word-inputs" style="display: flex; gap: 0.5rem; margin-bottom: 2rem; justify-content: center; flex-wrap: wrap;">
+            <div id="missing-word-inputs" style="display: flex; gap: 0.6rem; margin-bottom: 1.5rem; justify-content: center; flex-wrap: wrap;">
                 <!-- Inputs injected here -->
             </div>
         </div>
 
         <!-- End State -->
-        <div id="missing-word-end-screen" style="display: none; flex-direction: column; align-items: center; text-align: center;">
-            <div style="font-size: 5rem; margin-bottom: 1rem;">🎉</div>
-            <h2 style="color: var(--color-text-main); margin-bottom: 0.5rem; font-size: 2.5rem;">Fantastic!</h2>
-            <p style="font-size: 1.2rem; color: var(--color-text-muted); margin-bottom: 2rem;">You completed the sentence perfectly.</p>
+        <div id="missing-word-end-screen" style="display: none; flex-direction: column; align-items: center; text-align: center; margin-top: 1.5rem;">
+            <div style="font-size: 4rem; margin-bottom: 0.5rem;">🎉</div>
+            <h2 style="color: #000000; margin-bottom: 0.35rem; font-size: 2.2rem; font-weight: 900;">Fantastic!</h2>
+            <p style="font-size: 1.1rem; color: #475569; font-weight: 600; margin-bottom: 1.5rem;">You completed the sentence perfectly.</p>
             <div style="display: flex; justify-content: center; gap: 1rem;">
-                <a href="/" class="btn btn-outline" style="padding: 0.75rem 2rem; border-radius: 50px; font-size: 1.1rem;">Exit</a>
-                <button class="btn btn-primary" style="padding: 0.75rem 2rem; border-radius: 50px; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);" onclick="initMissingWordPage()">Play Again</button>
+                <a href="/" class="btn btn-outline" style="padding: 0.6rem 1.75rem; border-radius: 50px; font-size: 0.95rem; font-weight: 800; border: 2px solid #000000; box-shadow: 2px 2px 0px #000000;">Exit</a>
+                <button class="btn btn-primary" style="padding: 0.6rem 1.75rem; border-radius: 50px; font-size: 0.95rem; font-weight: 800; border: 2px solid #000000; box-shadow: 2px 2px 0px #000000;" onclick="initMissingWordPage()">Play Next Word &rarr;</button>
             </div>
         </div>
 

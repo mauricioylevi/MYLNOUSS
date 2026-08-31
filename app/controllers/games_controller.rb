@@ -1,4 +1,6 @@
 class GamesController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [:generate_story_sequence, :generate_critical_thinking, :generate_lets_talk, :story_prompts, :story_ai_turn]
+
   def profile_quiz
     # Fallbacks in case the user hasn't filled out a profile yet
     hobbies = ['travel', 'cooking', 'reading', 'photography']
@@ -394,5 +396,52 @@ class GamesController < ApplicationController
     history = params[:history] || []
     sentence = GeminiService.generate_story_continuation(history)
     render json: { sentence: sentence }
+  end
+
+  def story_sequence
+    @user = MainUser.first || MainUser.create
+    @difficulty = params[:difficulty] || 'easy'
+    
+    cache = GameCache.find_by(main_user_id: @user.id, game_type: 'story_sequence', difficulty: @difficulty)
+    
+    if cache && cache.payload.present? && cache.payload['story'].present?
+      @story_data = cache.payload['story']
+    else
+      num_steps = case @difficulty
+                  when 'hard' then 6
+                  when 'medium' then 4
+                  else 3
+                  end
+      @story_data = GeminiService.fallback_story_sequence(num_steps)
+      GameGenerationJob.perform_later(@user.id, 'story_sequence', @difficulty)
+    end
+  end
+
+  def generate_story_sequence
+    @user = MainUser.first || MainUser.create
+    difficulty = params[:difficulty] || 'easy'
+    
+    profile_info = "General Life & Hobbies"
+    if @user && @user.profile_data.present?
+      parts = []
+      @user.profile_data.each do |k, v|
+        next if v.blank?
+        val_str = v.is_a?(Array) ? v.join(', ') : v.to_s
+        parts << "#{k.to_s.titleize}: #{val_str}"
+      end
+      profile_info = parts.join(" | ") if parts.any?
+    end
+    
+    story = GeminiService.generate_story_sequence_data(difficulty, profile_info)
+    
+    if story && story['steps'].present?
+      cache = GameCache.find_or_initialize_by(main_user_id: @user.id, game_type: 'story_sequence', difficulty: difficulty)
+      cache.payload = { 'story' => story }
+      cache.save
+      
+      render json: { success: true, story: story }
+    else
+      render json: { success: false, error: "Failed to generate story sequence" }, status: :unprocessable_entity
+    end
   end
 end

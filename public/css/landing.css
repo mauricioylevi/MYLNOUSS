@@ -1,13 +1,31 @@
-/* Landing Page Specific Styles */
+/* Landing Page Specific Styles - LYMNOUS Theme */
+:root {
+    --landing-bg-green: #dcfce7;
+    --landing-bg-card: #ffffff;
+    --landing-border: #000000;
+}
+
+body {
+    background-color: var(--landing-bg-green);
+}
+
+#main-content {
+    background-color: var(--landing-bg-green);
+}
+
+.welcome-hero {
+    background-color: var(--landing-bg-green);
+}
+
 .landing-section {
-    padding: 6rem 1.5rem;
+    padding: 5rem 1.5rem;
     display: flex;
     justify-content: center;
-    background-color: var(--color-bg-primary);
+    background-color: var(--landing-bg-green);
 }
 
 .landing-section.alt {
-    background-color: var(--color-bg-secondary);
+    background-color: var(--landing-bg-green);
 }
 
 .landing-container {
@@ -15,41 +33,55 @@
     width: 100%;
 }
 
+.welcome-hero .card,
+.card-primary {
+    background: #ffffff !important;
+    border: 2px solid #000000 !important;
+    border-radius: 16px !important;
+    box-shadow: 4px 4px 0px #000000 !important;
+}
+
 .section-header {
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: 3.5rem;
 }
 
 .section-title {
-    font-size: 2.5rem;
-    color: var(--color-primary);
+    font-size: 2.75rem; /* Increased +2pt */
+    color: #000000;
     margin: 0 0 0.5rem 0;
-    font-weight: 800;
+    font-weight: 900;
 }
 
 .section-divider {
     height: 4px;
-    width: 60px;
-    background-color: var(--color-primary);
+    width: 70px;
+    background-color: #000000;
     margin: 0 auto 1.5rem auto;
     border-radius: var(--radius-full);
 }
 
 .section-subtitle {
-    font-size: 1.15rem;
-    color: var(--color-text-muted);
-    max-width: 700px;
+    font-size: 1.3rem; /* Increased +2pt */
+    color: #334155;
+    max-width: 750px;
     margin: 0 auto;
-    font-weight: 500;
+    font-weight: 600;
+    line-height: 1.6;
 }
 
 /* Feature & Story Rows */
 .split-row {
     display: flex;
     align-items: center;
-    gap: 4rem;
-    margin-bottom: 5rem;
+    gap: 3.5rem;
+    margin-bottom: 3.5rem;
     flex-wrap: wrap;
+    background: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 4px 4px 0px #000000;
 }
 
 .split-row.reverse {
@@ -62,9 +94,9 @@
 }
 
 .split-text h3 {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--color-text-main);
+    font-size: 1.95rem; /* Increased +2pt */
+    font-weight: 900;
+    color: #000000;
     margin: 0 0 1rem 0;
     display: flex;
     align-items: center;
@@ -72,19 +104,21 @@
 }
 
 .split-text p {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    color: var(--color-text-muted);
+    font-size: 1.25rem; /* Increased +2pt */
+    line-height: 1.75;
+    color: #334155;
+    font-weight: 500;
     margin: 0;
 }
 
 .split-media {
     flex: 1;
-    min-width: 300px;
-    border-radius: var(--radius-xl);
+    min-width: 280px;
+    border-radius: 14px;
     overflow: hidden;
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--color-border);
+    box-shadow: 2px 2px 0px #000000;
+    border: 2px solid #000000;
+    background: #f8fafc;
 }
 
 .split-media img {
@@ -94,47 +128,53 @@
     object-fit: cover;
 }
 
-/* Q&A Block */
+/* Q&A Block - Redesigned for Maximum Legibility & Readability */
+#qa.landing-section {
+    background-color: #dcfce7 !important;
+}
+
 .qa-block {
-    border-bottom: 1px solid var(--color-border);
-    padding: 1.5rem 1rem;
-    transition: all 0.3s ease;
-    border-radius: var(--radius-md);
-    cursor: pointer;
+    border: 2.5px solid #000000 !important;
+    background: #ffffff !important;
+    padding: 1.85rem 2.25rem !important;
+    margin-bottom: 1.5rem !important;
+    border-radius: 16px !important;
+    box-shadow: 4px 4px 0px #000000 !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .qa-block:hover {
-    background-color: var(--color-bg-secondary);
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    transform: translateY(-2px);
+    box-shadow: 6px 6px 0px #000000 !important;
 }
 
 .qa-header {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--color-text-main);
-    margin: 0;
-    transition: color 0.3s ease;
-}
-
-.qa-block:hover .qa-header {
-    color: var(--color-primary);
+    font-size: 1.4rem !important;
+    font-weight: 900 !important;
+    color: #000000 !important;
+    margin: 0 0 0.85rem 0 !important;
+    line-height: 1.45 !important;
+    display: block !important;
 }
 
 .qa-answer {
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: opacity 0.35s ease, max-height 0.35s ease-out, margin-top 0.35s ease;
+    color: #0f172a !important; /* Deepest black-slate for 100% legibility */
+    font-size: 1.25rem !important;
+    line-height: 1.85 !important;
+    font-weight: 500 !important;
+    margin: 0 !important;
+    opacity: 1 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    border-left: 5px solid #059669 !important;
+    background: #f8fafc !important;
+    padding: 1.15rem 1.4rem !important;
+    border-radius: 0 10px 10px 0 !important;
 }
 
-.qa-block:hover .qa-answer {
-    opacity: 1;
-    max-height: 250px;
-    margin-top: 0.75rem;
+.qa-answer strong {
+    color: #000000 !important;
+    font-weight: 900 !important;
 }
 
 /* Pricing Grid */
@@ -146,11 +186,11 @@
 }
 
 .pricing-card {
-    background: var(--color-card-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-xl);
+    background: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 16px;
     padding: 2.5rem;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 4px 4px 0px #000000;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -159,37 +199,38 @@
 
 .pricing-card:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 6px 6px 0px #000000;
 }
 
 .pricing-card.premium {
-    border: 3px solid var(--color-primary);
+    border: 3px solid #000000;
+    background: #f0fdf4;
 }
 
 .pricing-badge {
     position: absolute;
-    top: -12px;
+    top: -14px;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--color-primary);
+    background: #000000;
     color: white;
-    padding: 0.25rem 1rem;
+    padding: 0.3rem 1.2rem;
     border-radius: var(--radius-full);
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 800;
     text-transform: uppercase;
 }
 
 .pricing-price {
-    font-size: 2.5rem;
+    font-size: 2.75rem; /* Increased +2pt */
     font-weight: 900;
-    color: var(--color-text-main);
+    color: #000000;
     margin: 1.5rem 0;
 }
 
 .pricing-price span {
-    font-size: 1rem;
-    color: var(--color-text-muted);
+    font-size: 1.15rem;
+    color: #64748b;
     font-weight: 600;
 }
 
@@ -201,23 +242,24 @@
 }
 
 .pricing-features li {
-    font-size: 0.95rem;
-    color: var(--color-text-muted);
+    font-size: 1.1rem; /* Increased +2pt */
+    color: #334155;
     margin-bottom: 0.75rem;
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
+    font-weight: 500;
 }
 
 /* Contact Form */
 .contact-form {
     max-width: 600px;
     margin: 0 auto;
-    background: var(--color-card-bg);
+    background: #ffffff;
     padding: 3rem;
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: 4px 4px 0px #000000;
+    border: 2px solid #000000;
 }
 
 .form-group {
@@ -227,22 +269,25 @@
 .form-label {
     display: block;
     margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: var(--color-primary);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #000000;
 }
 
 .form-control {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-size: 1rem;
+    padding: 0.85rem 1rem;
+    border: 2px solid #000000;
+    border-radius: 10px;
+    font-size: 1.1rem;
     font-family: inherit;
     box-sizing: border-box;
+    background: #f8fafc;
     transition: border-color var(--transition-fast);
 }
 
 .form-control:focus {
     outline: none;
-    border-color: var(--color-primary);
+    background: #ffffff;
+    box-shadow: 2px 2px 0px #000000;
 }

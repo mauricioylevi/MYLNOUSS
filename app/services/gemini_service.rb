@@ -51,7 +51,7 @@ class GeminiService
     api_key = ENV['GEMINI_API_KEY']
     return nil unless api_key.present?
     
-    uri = URI("https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=#{api_key}")
+    uri = URI("https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=#{api_key}")
     
     req = Net::HTTP::Post.new(uri)
     req['Content-Type'] = 'application/json'
@@ -570,5 +570,176 @@ class GeminiService
       "What is a memory that always makes you smile?",
       "If you could visit anywhere, where would it be?"
     ]
+  end
+
+  def self.generate_story_sequence_data(difficulty = 'easy', profile_info = 'General Life & Hobbies')
+    num_steps = case difficulty.to_s.downcase
+                when 'hard' then 6
+                when 'medium' then 4
+                else 3
+                end
+
+    api_key = ENV['GEMINI_API_KEY']
+    story_data = nil
+
+    if api_key.present?
+      uri = URI("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=#{api_key}")
+      
+      prompt = <<~PROMPT
+        You are a gentle cognitive logic game designer for older adults.
+        The user's personal profile and interests: #{profile_info}.
+        Create a single, highly coherent, chronological story or everyday activity scene broken down into exactly #{num_steps} sequential steps.
+        The sequence must have a crystal-clear cause-and-effect logical order from beginning to end (e.g. preparing, doing, completing/celebrating).
+        
+        Difficulty: #{difficulty} (#{num_steps} steps).
+        
+        Return ONLY a JSON object with this exact structure, no markdown formatting:
+        {
+          "title": "A Day Planting the Spring Garden",
+          "theme": "Gardening & Nature",
+          "steps": [
+            {
+              "order": 1,
+              "caption": "Gathering fresh seeds, trowel, and gardening gloves in the morning.",
+              "image_prompt": "A wooden table with small packets of flower seeds, metal hand trowel, and canvas gardening gloves in warm sunlight",
+              "icon": "🌱"
+            }
+          ]
+        }
+      PROMPT
+
+      req = Net::HTTP::Post.new(uri)
+      req['Content-Type'] = 'application/json'
+      req.body = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.7 }
+      }.to_json
+
+      begin
+        res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true, read_timeout: 30) do |http|
+          http.request(req)
+        end
+
+        if res.is_a?(Net::HTTPSuccess)
+          data = JSON.parse(res.body)
+          text = data.dig('candidates', 0, 'content', 'parts', 0, 'text') || '{}'
+          text = text.gsub("```json", "").gsub("```", "").strip
+          parsed = JSON.parse(text)
+          if parsed['steps'].is_a?(Array) && parsed['steps'].length == num_steps
+            story_data = parsed
+          end
+        end
+      rescue => e
+        Rails.logger.error "Gemini Story Sequence Text Exception: #{e.message}"
+      end
+    end
+
+    # Built-in robust fallbacks tailored to profile themes if API is offline or returns nil
+    unless story_data && story_data['steps'].present?
+      story_data = fallback_story_sequence(num_steps)
+    end
+
+    # Concurrently generate images if API key is available
+    if api_key.present? && story_data && story_data['steps'].present?
+      threads = []
+      story_data['steps'].each do |step|
+        threads << Thread.new do
+          img_prompt = step['image_prompt'] || step['caption']
+          base64_img = generate_image(img_prompt)
+          step['image_base64'] = base64_img if base64_img.present?
+        end
+      end
+      threads.each(&:join)
+    end
+
+    story_data
+  end
+
+  def self.fallback_story_sequence(num_steps)
+    stories_3 = [
+      {
+        "title" => "Baking a Fresh Loaf of Bread",
+        "theme" => "Cooking & Baking",
+        "steps" => [
+          { "order" => 1, "caption" => "Measuring the flour, yeast, and warm water into a large mixing bowl.", "icon" => "🥣", "image_prompt" => "Rustic kitchen counter with flour, yeast packet, and mixing bowl" },
+          { "order" => 2, "caption" => "Kneading the smooth dough and placing it in a warm pan to rise.", "icon" => "🍞", "image_prompt" => "Hands gently kneading bread dough on a wooden floured cutting board" },
+          { "order" => 3, "caption" => "Taking the golden-brown, warm loaf out of the oven to cool.", "icon" => "✨", "image_prompt" => "Freshly baked golden brown crusty bread loaf cooling on a wire rack" }
+        ]
+      },
+      {
+        "title" => "Planting Sunflowers in the Garden",
+        "theme" => "Gardening & Nature",
+        "steps" => [
+          { "order" => 1, "caption" => "Digging small holes in the rich garden soil with a hand trowel.", "icon" => "🌱", "image_prompt" => "Rich dark garden soil being dug with a hand trowel on a sunny morning" },
+          { "order" => 2, "caption" => "Placing the sunflower seeds in the ground and gently covering them with soil.", "icon" => "🌻", "image_prompt" => "Planting small black sunflower seeds into freshly dug soil" },
+          { "order" => 3, "caption" => "Watering the soil thoroughly with a green watering can.", "icon" => "💧", "image_prompt" => "Water pouring gently from a green watering can onto garden soil" }
+        ]
+      },
+      {
+        "title" => "A Morning Walk with the Dog",
+        "theme" => "Pets & Companionship",
+        "steps" => [
+          { "order" => 1, "caption" => "Putting on comfortable walking shoes and clipping on the dog's leash.", "icon" => "👟", "image_prompt" => "Clipping a red leash onto a happy golden retriever collar" },
+          { "order" => 2, "caption" => "Walking together down a quiet, tree-lined neighborhood sidewalk in the morning.", "icon" => "🌳", "image_prompt" => "A person walking a dog on a scenic sunny park pathway" },
+          { "order" => 3, "caption" => "Returning home happy and refilling the fresh water bowl.", "icon" => "🏡", "image_prompt" => "Happy dog drinking water from a stainless steel bowl at home" }
+        ]
+      }
+    ]
+
+    stories_4 = [
+      {
+        "title" => "Brewing a Relaxing Cup of Afternoon Tea",
+        "theme" => "Relaxation & Daily Routines",
+        "steps" => [
+          { "order" => 1, "caption" => "Filling the kettle with fresh cool water and placing it on the stove.", "icon" => "🫖", "image_prompt" => "Vintage stainless steel tea kettle being filled with water under a faucet" },
+          { "order" => 2, "caption" => "The kettle whistles as the water reaches a rolling boil.", "icon" => "💨", "image_prompt" => "Steam rising from a hot whistling tea kettle on the stove" },
+          { "order" => 3, "caption" => "Pouring steaming hot water over favorite herbal tea leaves in a porcelain teapot.", "icon" => "🌿", "image_prompt" => "Hot water pouring into a white porcelain teapot with loose tea leaves" },
+          { "order" => 4, "caption" => "Pouring the soothing tea into a teacup with a slice of lemon and honey.", "icon" => "☕", "image_prompt" => "Warm cup of tea with honey and a lemon slice beside a sunny window" }
+        ]
+      },
+      {
+        "title" => "Painting a Watercolor Landscape",
+        "theme" => "Arts & Creativity",
+        "steps" => [
+          { "order" => 1, "caption" => "Setting up the easel, watercolor paper, brushes, and clean water jars.", "icon" => "🎨", "image_prompt" => "Art studio table with blank watercolor paper, paint brushes, and water jars" },
+          { "order" => 2, "caption" => "Lightly sketching the mountain and lake horizon with a pencil.", "icon" => "✏️", "image_prompt" => "Pencil sketching mountains on textured watercolor paper" },
+          { "order" => 3, "caption" => "Applying colorful sky and mountain washes with soft brush strokes.", "icon" => "🖌️", "image_prompt" => "Watercolor brush painting blue and purple wash onto landscape painting" },
+          { "order" => 4, "caption" => "Displaying the completed, vibrant landscape painting on the mantle.", "icon" => "🖼️", "image_prompt" => "Beautiful finished watercolor landscape painting framed on a wooden mantle" }
+        ]
+      }
+    ]
+
+    stories_6 = [
+      {
+        "title" => "Restoring and Caring for a Classic Wooden Clock",
+        "theme" => "Craftsmanship & History",
+        "steps" => [
+          { "order" => 1, "caption" => "Inspecting the antique wooden clock on the workbench with a magnifying glass.", "icon" => "🔍", "image_prompt" => "Antique wooden clock on a workbench examined with tools and magnifying glass" },
+          { "order" => 2, "caption" => "Carefully removing the back panel to inspect the brass gears and pendulum.", "icon" => "⚙️", "image_prompt" => "Intricate brass clock gears and pendulum inside an open clock cabinet" },
+          { "order" => 3, "caption" => "Gently cleaning the brass movement and applying fine watchmaker oil to each pivot.", "icon" => "🪛", "image_prompt" => "Precision oiler applying a tiny drop of oil to brass clock gear pivots" },
+          { "order" => 4, "caption" => "Polishing the rich walnut wood cabinet with natural beeswax polish.", "icon" => "✨", "image_prompt" => "Soft cloth polishing antique walnut wood clock casing to a warm shine" },
+          { "order" => 5, "caption" => "Winding the spring mechanism with the original brass winding key.", "icon" => "🗝️", "image_prompt" => "Hand turning a brass key in the winding arbor of a vintage clock face" },
+          { "order" => 6, "caption" => "Setting the hands to the exact time as the chime rings melodiously.", "icon" => "🕰️", "image_prompt" => "Restored antique clock ticking on the wall with pendulum swinging gracefully" }
+        ]
+      },
+      {
+        "title" => "Preparing a Special Sunday Family Dinner",
+        "theme" => "Family & Celebration",
+        "steps" => [
+          { "order" => 1, "caption" => "Writing out the menu and shopping list in the kitchen.", "icon" => "📋", "image_prompt" => "Handwritten recipe notebook and grocery list on a kitchen counter" },
+          { "order" => 2, "caption" => "Selecting fresh vegetables, herbs, and bread at the local farmers market.", "icon" => "🥕", "image_prompt" => "Fresh carrots, rosemary, and sourdough bread in a wicker market basket" },
+          { "order" => 3, "caption" => "Chopping vegetables and simmering a savory homemade roast in the oven.", "icon" => "🍲", "image_prompt" => "Chopped herbs and vegetables simmering in a cast iron dutch oven" },
+          { "order" => 4, "caption" => "Setting the dining table with fine plates, cloth napkins, and glassware.", "icon" => "🍽️", "image_prompt" => "Warm dining table set with white plates, cloth napkins, and silverware" },
+          { "order" => 5, "caption" => "Welcoming loved ones at the front door with warm greetings and smiles.", "icon" => "👋", "image_prompt" => "Front door opening with friendly smiles and welcoming gestures" },
+          { "order" => 6, "caption" => "Sitting down together around the table enjoying food, stories, and laughter.", "icon" => "❤️", "image_prompt" => "Happy family enjoying dinner together around a bountiful table" }
+        ]
+      }
+    ]
+
+    case num_steps
+    when 6 then stories_6.sample
+    when 4 then stories_4.sample
+    else stories_3.sample
+    end
   end
 end

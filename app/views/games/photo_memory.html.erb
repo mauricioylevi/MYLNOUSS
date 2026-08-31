@@ -1,49 +1,80 @@
-<main class="app-content">
-  <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; overflow: auto; padding: 2rem; background: var(--color-bg);">
-    <div id="photo-memory-container" style="width: 100%; max-width: 800px; background: var(--color-surface); border-radius: 12px; box-shadow: var(--shadow-md); display: flex; flex-direction: column;">
-      
-      <!-- Loading State -->
-      <div id="pm-loading-state" style="padding: 4rem 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-          <div class="loader" style="border: 4px solid #f3f3f3; border-top: 4px solid var(--color-primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 1rem;"></div>
-          <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
-          <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;">Generating Your Memories...</h3>
-          <p style="color: var(--color-text-light);">Our AI is picking 3 random photos and crafting questions. This might take a moment.</p>
+<main class="app-content" style="padding: 1rem 1.5rem; height: calc(100vh - 70px); box-sizing: border-box; display: flex; flex-direction: column;">
+  <div style="display: flex; flex-direction: column; height: 100%; background: #ffffff; border: 2px solid #000000; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-relief-md);">
+    
+    <!-- Header -->
+    <header style="padding: 0.65rem 1.5rem; border-bottom: 2px solid #000000; display: flex; justify-content: space-between; align-items: center; background: #ffffff; flex-shrink: 0; gap: 1rem;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 1.6rem; background: #ede9fe; padding: 0.2rem 0.45rem; border-radius: 8px; border: 1.5px solid #000000; box-shadow: 1.5px 1.5px 0px #000000;">📸</span>
+        <div>
+          <h2 style="font-size: 1.35rem; font-weight: 900; color: #000000; margin: 0; line-height: 1.2;">
+            Remember That Picture
+          </h2>
+          <span style="color: var(--color-text-muted); font-size: 0.8rem; font-weight: 600;">
+            Study the family memory, then answer trivia about the details
+          </span>
+        </div>
       </div>
-
-      <!-- Memory Phase (View Image) -->
-      <div id="pm-memory-state" style="padding: 2rem; display: none; flex-direction: column; align-items: center; text-align: center;">
-          <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 1rem;">
-              <span id="pm-progress" style="font-weight: 600; color: var(--color-text-light);">Round 1 of 3</span>
-              <span style="font-weight: bold; color: #F44336; font-size: 1.2rem;">⏱ <span id="pm-timer">60</span>s</span>
-          </div>
-          <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem;">Memorize this photo!</h2>
-          <p style="color: var(--color-text-light); margin-top: -0.5rem; margin-bottom: 1.5rem;"><em>Hover over the photo to magnify details</em></p>
-          <div id="pm-image-container" style="position: relative; overflow: hidden; cursor: zoom-in; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 1.5rem; max-height: 400px; display: inline-block;">
-              <img id="pm-image" src="" alt="Memory Image" style="max-width: 100%; max-height: 400px; object-fit: contain; transition: transform 0.1s; transform-origin: center center;">
-          </div>
-          <button class="btn btn-primary" style="padding: 1rem 3rem; border-radius: 50px; font-size: 1.2rem;" onclick="pmEndMemoryPhase()">I am ready!</button>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <a href="/" class="btn btn-outline btn-compact" style="border-radius: 50px; font-weight: 700; border: 1.5px solid #000000;">
+          &larr; Exit
+        </a>
       </div>
+    </header>
 
-      <!-- Quiz Phase (Answer Question) -->
-      <div id="pm-quiz-state" style="padding: 2rem; display: none; flex-direction: column; align-items: center; text-align: center;">
-          <h2 id="pm-question" style="font-size: 1.8rem; font-weight: 700; margin-bottom: 2rem;">Question goes here?</h2>
-          <div id="pm-choices" style="display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 500px;">
-              <!-- Buttons injected here -->
-          </div>
-          <div id="pm-feedback" style="margin-top: 2rem; font-size: 1.2rem; font-weight: bold; display: none;"></div>
-          <button id="pm-next-btn" class="btn btn-primary" style="margin-top: 1.5rem; display: none;" onclick="pmStartMemoryPhase()">Next Round</button>
+    <!-- Game Container (Top Aligned) -->
+    <div style="flex: 1; padding: 1.25rem 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; position: relative; overflow-y: auto;">
+      <div id="photo-memory-container" style="width: 100%; max-width: 800px; display: flex; flex-direction: column; align-items: center;">
+        
+        <!-- Loading State -->
+        <div id="pm-loading-state" style="padding: 2.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+            <div class="loader" style="border: 4px solid #f3f3f3; border-top: 4px solid #7c3aed; border-radius: 50%; width: 44px; height: 44px; animation: spin 1s linear infinite; margin-bottom: 1rem;"></div>
+            <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+            <h3 style="font-size: 1.35rem; font-weight: 900; color: #000000; margin-bottom: 0.35rem;">Generating Your Memories...</h3>
+            <p style="color: #64748b; font-weight: 600; margin: 0;">Our AI is picking favorite photos and crafting memory questions.</p>
+        </div>
+
+        <!-- Memory Phase (View Image) -->
+        <div id="pm-memory-state" style="padding: 0.5rem 0; display: none; flex-direction: column; align-items: center; text-align: center; width: 100%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 0.75rem;">
+                <span id="pm-progress" style="font-weight: 800; font-size: 0.95rem; color: #5b21b6; background: #ede9fe; border: 1px solid #000000; padding: 0.2rem 0.75rem; border-radius: 50px;">Round 1 of 3</span>
+                <span style="font-weight: 900; color: #dc2626; font-size: 1.1rem; background: #fee2e2; border: 1px solid #000000; padding: 0.2rem 0.75rem; border-radius: 50px;">⏱ <span id="pm-timer">60</span>s</span>
+            </div>
+            <h3 style="font-size: 1.25rem; font-weight: 900; color: #000000; margin: 0 0 0.25rem 0;">Memorize this photo!</h3>
+            <p style="color: #64748b; font-size: 0.85rem; font-weight: 600; margin: 0 0 1rem 0;">Notice faces, clothing colors, objects, and setting.</p>
+            
+            <div id="pm-image-container" style="position: relative; overflow: hidden; border-radius: 12px; border: 2px solid #000000; box-shadow: var(--shadow-relief-md); margin-bottom: 1.25rem; max-height: 380px; display: inline-block;">
+                <img id="pm-image" src="" alt="Memory Image" style="max-width: 100%; max-height: 360px; object-fit: contain; display: block;">
+            </div>
+            <div>
+                <button class="btn btn-primary" style="padding: 0.75rem 2.5rem; border-radius: 50px; font-size: 1.05rem; font-weight: 800; border: 2px solid #000000; box-shadow: 2px 2px 0px #000000;" onclick="pmEndMemoryPhase()">I am ready!</button>
+            </div>
+        </div>
+
+        <!-- Quiz Phase (Answer Question) -->
+        <div id="pm-quiz-state" style="padding: 0.5rem 0; display: none; flex-direction: column; align-items: center; text-align: center; width: 100%;">
+            <div style="background: #f8fafc; border: 2px solid #000000; border-radius: 12px; padding: 1.25rem 1.5rem; box-shadow: 2px 2px 0px #000000; width: 100%; box-sizing: border-box; margin-bottom: 1.25rem;">
+                <h3 id="pm-question" style="font-size: 1.35rem; font-weight: 900; color: #000000; margin: 0;">Question goes here?</h3>
+            </div>
+            
+            <div id="pm-choices" style="display: flex; flex-direction: column; gap: 0.75rem; width: 100%; max-width: 550px;">
+                <!-- Buttons injected here -->
+            </div>
+            <div id="pm-feedback" style="margin-top: 1.25rem; font-size: 1.1rem; font-weight: 800; display: none;"></div>
+            <button id="pm-next-btn" class="btn btn-primary" style="margin-top: 1.25rem; display: none; padding: 0.6rem 2rem; border-radius: 50px; font-size: 1rem; font-weight: 800; border: 2px solid #000000; box-shadow: 2px 2px 0px #000000;" onclick="pmStartMemoryPhase()">Next Round &rarr;</button>
+        </div>
+
+        <!-- End State -->
+        <div id="pm-end-state" style="padding: 2.5rem 1rem; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+            <div style="font-size: 4rem; margin-bottom: 0.5rem;">🎉</div>
+            <h2 style="font-size: 2.2rem; font-weight: 900; color: #000000; margin-bottom: 0.5rem;">Game Over!</h2>
+            <p id="pm-final-score" style="font-size: 1.25rem; font-weight: 700; color: #475569; margin-bottom: 1.5rem;">You got 0 out of 3 correct!</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button class="btn btn-primary" style="padding: 0.65rem 2rem; border-radius: 50px; font-size: 1rem; font-weight: 800; border: 2px solid #000000; box-shadow: 2px 2px 0px #000000;" onclick="startPhotoMemory()">Play Again</button>
+                <button class="btn btn-outline" style="padding: 0.65rem 2rem; border-radius: 50px; font-size: 1rem; font-weight: 800; border: 2px solid #000000; box-shadow: 2px 2px 0px #000000;" onclick="window.location.href='/'">Return to Dashboard</button>
+            </div>
+        </div>
+
       </div>
-
-      <!-- End State -->
-      <div id="pm-end-state" style="padding: 4rem 2rem; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-          <h2 style="font-size: 2.5rem; font-weight: 700; color: var(--color-primary); margin-bottom: 1rem;">Game Over!</h2>
-          <p id="pm-final-score" style="font-size: 1.5rem; margin-bottom: 2rem;">You got 0 out of 3 correct!</p>
-          <div style="display: flex; gap: 1rem; justify-content: center;">
-              <button class="btn btn-primary" style="padding: 1rem 2rem; border-radius: 50px; font-size: 1.2rem; background-color: var(--color-primary);" onclick="startPhotoMemory()">Play Again</button>
-              <button class="btn btn-outline" style="padding: 1rem 2rem; border-radius: 50px; font-size: 1.2rem; border: 2px solid var(--color-border); color: var(--color-text-main); background: transparent;" onclick="window.location.href='/'">Return to Dashboard</button>
-          </div>
-      </div>
-
     </div>
   </div>
 </main>

@@ -1,28 +1,40 @@
-<main class="app-content">
+<main class="app-content" style="padding: 1rem 1.5rem; height: calc(100vh - 70px); box-sizing: border-box; display: flex; flex-direction: column;">
+  <div style="display: flex; flex-direction: column; height: 100%; background: #ffffff; border: 2px solid #000000; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-relief-md);">
     
-    <div style="max-width: 1200px; margin: 0 auto; width: 100%;">
-        <div style="border-bottom: 1px solid var(--color-border); padding-bottom: 1.5rem; margin-bottom: 2rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <h1 style="margin: 0; font-size: 2.2rem; color: var(--color-text-main); font-weight: 900;">
-                    My Photo Gallery
-                </h1>
-                <a href="/" class="btn btn-outline" style="border-radius: 50px; padding: 0.35rem 1rem; font-size: 0.9rem; font-weight: 600;">&larr; Back to Dashboard</a>
-            </div>
+    <!-- Header -->
+    <header style="padding: 0.65rem 1.5rem; border-bottom: 2px solid #000000; display: flex; justify-content: space-between; align-items: center; background: #ffffff; flex-shrink: 0; gap: 1rem;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 1.6rem; background: #ede9fe; padding: 0.2rem 0.45rem; border-radius: 8px; border: 1.5px solid #000000; box-shadow: 1.5px 1.5px 0px #000000;">📷</span>
+        <div>
+          <h2 style="font-size: 1.35rem; font-weight: 900; color: #000000; margin: 0; line-height: 1.2;">
+            My Photo Gallery
+          </h2>
+          <span style="color: var(--color-text-muted); font-size: 0.8rem; font-weight: 600;">
+            Browse and reminisce through your family photo memories
+          </span>
         </div>
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <a href="/" class="btn btn-outline btn-compact" style="border-radius: 50px; font-weight: 700; border: 1.5px solid #000000;">
+          &larr; Exit
+        </a>
+      </div>
+    </header>
 
-        <div style="flex-grow: 1;">
-            <div id="gallery-items-wrapper" style="column-width: 220px; column-gap: 1.5rem;">
-                <!-- JS injected memory cards go here -->
-            </div>
-            
-            <div id="gallery-empty-msg" style="text-align: center; color: var(--color-text-muted); padding: 4rem; display: none;">
-                <span style="font-size: 4rem; display: block; margin-bottom: 1rem;">📷</span>
-                <h3 style="font-size: 1.5rem; margin: 0 0 0.5rem 0; color: var(--color-text-main);">No Photos Yet</h3>
-                <p style="font-size: 1.1rem; max-width: 400px; margin: 0 auto;">Ask the Administrator to upload some photos in the "Post Photos" tool!</p>
-            </div>
+    <!-- Gallery Content (Top Aligned) -->
+    <div style="flex: 1; padding: 1.5rem; overflow-y: auto;">
+        <div id="gallery-items-wrapper" style="column-width: 220px; column-gap: 1.25rem;">
+            <!-- JS injected memory cards go here -->
+        </div>
+        
+        <div id="gallery-empty-msg" style="text-align: center; color: #64748b; padding: 3rem 1.5rem; display: none;">
+            <span style="font-size: 3.5rem; display: block; margin-bottom: 0.5rem;">📷</span>
+            <h3 style="font-size: 1.4rem; font-weight: 900; margin: 0 0 0.5rem 0; color: #000000;">No Photos Yet</h3>
+            <p style="font-size: 1rem; font-weight: 600; max-width: 450px; margin: 0 auto; color: #475569;">Ask your loved ones or administrator to upload photos in the Family &amp; Loved One section!</p>
         </div>
     </div>
-    
+
+  </div>
 </main>
 
 <script>

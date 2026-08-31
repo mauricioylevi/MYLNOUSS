@@ -1,0 +1,900 @@
+<main class="app-content" style="padding: 1rem 1.5rem; height: calc(100vh - 70px); box-sizing: border-box; display: flex; flex-direction: column;">
+  <div style="display: flex; flex-direction: column; height: 100%; background: #ffffff; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-relief-md); border: 2px solid #000000;">
+    
+    <!-- Top Control Bar (Compact Single Line) -->
+    <header style="padding: 0.65rem 1.5rem; border-bottom: 2px solid #000000; display: flex; justify-content: space-between; align-items: center; background: #ffffff; flex-shrink: 0; gap: 1rem;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 1.6rem; background: #ede9fe; padding: 0.2rem 0.45rem; border-radius: 8px; border: 1.5px solid #000000; box-shadow: 1.5px 1.5px 0px #000000;">🎬</span>
+        <div>
+          <h2 style="font-size: 1.35rem; font-weight: 900; color: #000000; margin: 0; line-height: 1.2;">
+            Story Sequence
+          </h2>
+          <span style="color: var(--color-text-muted); font-size: 0.8rem; font-weight: 600;">
+            Put the scene cards in chronological order
+          </span>
+        </div>
+      </div>
+
+      <!-- Center Theme & Title Banner -->
+      <div id="header-story-info" style="display: flex; align-items: center; gap: 0.6rem; background: #f8fafc; border: 1.5px solid #000000; border-radius: 50px; padding: 0.25rem 1rem; box-shadow: 2px 2px 0px #000000;">
+        <span id="story-theme-badge" style="background: #ede9fe; color: #5b21b6; font-size: 0.75rem; font-weight: 800; padding: 0.15rem 0.55rem; border-radius: 50px; border: 1px solid #000000;">
+          Theme
+        </span>
+        <strong id="story-title-text" style="font-size: 0.95rem; color: #0f172a; font-weight: 800;">
+          Story Title
+        </strong>
+      </div>
+
+      <!-- Action Buttons & Difficulty -->
+      <div style="display: flex; gap: 0.6rem; align-items: center;">
+        <button onclick="readStoryAloud()" class="btn btn-outline btn-compact" title="Read story aloud">
+          <span>🔊</span> Read
+        </button>
+        <button onclick="provideHint()" class="btn btn-outline btn-compact" title="Get a hint">
+          <span>💡</span> Hint
+        </button>
+        
+        <div style="display: flex; align-items: center; gap: 0.35rem; margin-left: 0.4rem;">
+          <label for="difficulty-select" style="font-weight: 800; font-size: 0.82rem; color: #000000;">Level:</label>
+          <select id="difficulty-select" onchange="changeDifficulty(this.value)" class="difficulty-dropdown">
+            <option value="easy" <%= 'selected' if @difficulty == 'easy' %>>Easy (3 Cards)</option>
+            <option value="medium" <%= 'selected' if @difficulty == 'medium' %>>Medium (4 Cards)</option>
+            <option value="hard" <%= 'selected' if @difficulty == 'hard' %>>Hard (6 Cards)</option>
+          </select>
+        </div>
+        
+        <a href="/" class="btn btn-outline btn-compact" style="margin-left: 0.25rem;">
+          &larr; Exit
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Workspace (Single Scene, Side-by-Side Split, No Page Scroll) -->
+    <div id="game-workspace" style="flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 0.75rem 1.25rem; overflow: hidden; position: relative;">
+      
+      <!-- Active Game View -->
+      <div id="seq-game-container" style="display: flex; flex-direction: column; height: 100%; min-height: 0; width: 100%;">
+        
+        <!-- Interactive 2-Column Board -->
+        <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 0.6rem;">
+          
+          <!-- LEFT COLUMN: Available Cards Pool -->
+          <section class="split-pane-box">
+            <div class="pane-header">
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <span>🔀</span>
+                <strong>Available Cards (Shuffled)</strong>
+              </div>
+              <span id="pool-count-text" class="status-pill"></span>
+            </div>
+            
+            <div id="cards-pool-list" class="cards-list-container">
+              <!-- Injected by JS -->
+            </div>
+          </section>
+
+          <!-- RIGHT COLUMN: Target Sequence Order -->
+          <section class="split-pane-box">
+            <div class="pane-header">
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <span>📍</span>
+                <strong>Correct Sequence (Place Here)</strong>
+              </div>
+              <span style="font-size: 0.78rem; font-weight: 700; color: #475569;">1st &rarr; Last</span>
+            </div>
+            
+            <div id="target-slots-list" class="cards-list-container">
+              <!-- Injected by JS -->
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Bottom Action Bar (Fixed at bottom of the scene) -->
+        <footer style="flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 2px solid #000000; border-radius: 10px; padding: 0.5rem 1.25rem; box-shadow: 2px 2px 0px #000000;">
+          
+          <!-- Feedback Message -->
+          <div id="feedback-banner" style="font-size: 0.95rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 0.5rem;">
+            <span>👉</span> <span>Tap a card on the left, then tap a slot on the right to arrange.</span>
+          </div>
+
+          <!-- Buttons -->
+          <div style="display: flex; gap: 0.65rem; align-items: center;">
+            <button id="check-order-btn" onclick="checkSequence()" class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.95rem; font-weight: 800; border-radius: 50px; border: 2px solid #000000; box-shadow: 2px 2px 0px #000000;">
+              ✓ Check Order
+            </button>
+            <button onclick="resetPlacedCards()" class="btn btn-outline btn-compact" style="padding: 0.5rem 1.1rem;">
+              🔄 Reset
+            </button>
+            <button id="next-story-btn" onclick="loadNewStory()" class="btn btn-outline btn-compact" style="padding: 0.5rem 1.1rem; background: #ede9fe; color: #5b21b6;">
+              ⏭️ Next Story
+            </button>
+          </div>
+
+        </footer>
+
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- Safely embedded JSON payload -->
+<script type="application/json" id="initial-story-data">
+  <%= raw(@story_data.to_json) %>
+</script>
+
+<style>
+  /* Button Styles */
+  .btn-compact {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border-radius: 50px;
+    border: 1.5px solid #000000;
+    box-shadow: 1.5px 1.5px 0px #000000;
+  }
+
+  .difficulty-dropdown {
+    padding: 0.35rem 0.75rem;
+    border-radius: 50px;
+    border: 1.5px solid #000000;
+    background: #ffffff;
+    color: #000000;
+    font-size: 0.82rem;
+    font-weight: 800;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 1.5px 1.5px 0px #000000;
+  }
+
+  /* Pane Boxes */
+  .split-pane-box {
+    background: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 10px;
+    box-shadow: 3px 3px 0px #000000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .pane-header {
+    background: #f8fafc;
+    border-bottom: 2px solid #000000;
+    padding: 0.45rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.88rem;
+    color: #000000;
+    flex-shrink: 0;
+  }
+
+  .status-pill {
+    background: #dcfce7;
+    color: #065f46;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.15rem 0.6rem;
+    border-radius: 50px;
+    border: 1px solid #000000;
+  }
+
+  .cards-list-container {
+    flex: 1;
+    min-height: 0;
+    padding: 0.65rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 0.5rem;
+    overflow: hidden;
+  }
+
+  /* Compact Horizontal Card */
+  .story-card-compact {
+    background: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 8px;
+    padding: 0.45rem 0.65rem;
+    box-shadow: 2px 2px 0px #000000;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    flex: 1;
+    min-height: 0;
+    max-height: 110px;
+  }
+
+  .story-card-compact:hover {
+    transform: translateY(-1px);
+    box-shadow: 3px 3px 0px #000000;
+    background: #fcfcfc;
+  }
+
+  .story-card-compact.selected {
+    outline: 3px solid #2563eb;
+    background: #eff6ff !important;
+  }
+
+  .story-card-compact.dragging {
+    opacity: 0.4;
+  }
+
+  .card-thumbnail-box {
+    width: 68px;
+    height: 100%;
+    max-height: 75px;
+    min-height: 52px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1.5px solid #000000;
+    background: #f1f5f9;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-thumbnail-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-caption-compact {
+    flex: 1;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.35;
+    margin: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  .card-action-btn {
+    padding: 0.25rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    border-radius: 50px;
+    border: 1px solid #000000;
+    background: #f8fafc;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Target Slot Row */
+  .target-slot-row {
+    background: #f8fafc;
+    border: 2px dashed #64748b;
+    border-radius: 8px;
+    padding: 0.35rem 0.65rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    flex: 1;
+    min-height: 0;
+    max-height: 110px;
+  }
+
+  .target-slot-row:hover {
+    border-color: #000000;
+    background: #ffffff;
+  }
+
+  .target-slot-row.drag-over {
+    background: #dbeafe !important;
+    border-color: #2563eb !important;
+    border-style: solid !important;
+  }
+
+  .target-slot-row.filled {
+    border-style: solid;
+    border-color: #000000;
+    background: #ffffff;
+    box-shadow: 2px 2px 0px #000000;
+    padding: 0.25rem 0.35rem;
+  }
+
+  .target-slot-row.correct {
+    border-color: #059669 !important;
+    background: #dcfce7 !important;
+    box-shadow: 3px 3px 0px #059669 !important;
+  }
+
+  .target-slot-row.wrong {
+    border-color: #dc2626 !important;
+    background: #fee2e2 !important;
+    box-shadow: 3px 3px 0px #dc2626 !important;
+  }
+
+  .slot-label-badge {
+    background: #000000;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 900;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .slot-placeholder-text {
+    color: #64748b;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex: 1;
+  }
+</style>
+
+<script>
+  var currentDifficulty = "<%= @difficulty %>" || 'easy';
+  var currentStoryIndex = 0;
+  var currentStory = null;
+  var placedCards = {};
+  var selectedPoolCard = null;
+  var poolCards = [];
+
+  var storyDecks = {
+    easy: [
+      {
+        title: "A Morning Cup of Fresh Coffee",
+        theme: "Daily Routines & Comfort",
+        steps: [
+          { order: 1, caption: "Grinding fresh, aromatic coffee beans in the kitchen.", icon: "☕" },
+          { order: 2, caption: "Pouring steaming hot water through the filter into a favorite ceramic mug.", icon: "🫖" },
+          { order: 3, caption: "Relaxing on the sunny porch, enjoying the rich, comforting first sip.", icon: "☀️" }
+        ]
+      },
+      {
+        title: "Planting Sunflowers in the Garden",
+        theme: "Gardening & Nature",
+        steps: [
+          { order: 1, caption: "Digging small holes in the rich garden soil with a hand trowel.", icon: "🌱" },
+          { order: 2, caption: "Placing the sunflower seeds in the ground and gently covering them with soil.", icon: "🌻" },
+          { order: 3, caption: "Watering the soil thoroughly with a green watering can.", icon: "💧" }
+        ]
+      },
+      {
+        title: "A Morning Walk with the Dog",
+        theme: "Pets & Companionship",
+        steps: [
+          { order: 1, caption: "Putting on walking shoes and clipping on the dog's leash.", icon: "👟" },
+          { order: 2, caption: "Walking down a quiet, tree-lined neighborhood sidewalk in the morning.", icon: "🌳" },
+          { order: 3, caption: "Returning home happy and refilling the fresh water bowl.", icon: "🏡" }
+        ]
+      },
+      {
+        title: "Sending a Handwritten Letter",
+        theme: "Connection & Memories",
+        steps: [
+          { order: 1, caption: "Writing a heartfelt note on stationery paper with a fountain pen.", icon: "✍️" },
+          { order: 2, caption: "Folding the letter into an envelope and pressing on a postage stamp.", icon: "✉️" },
+          { order: 3, caption: "Dropping the envelope into the mailbox at the front gate.", icon: "📮" }
+        ]
+      }
+    ],
+    medium: [
+      {
+        title: "Afternoon Garden Care",
+        theme: "Gardening & Outdoors",
+        steps: [
+          { order: 1, caption: "Putting on garden gloves and gathering the hand trowel.", icon: "🧤" },
+          { order: 2, caption: "Planting fresh green seedlings into the rich, dark soil.", icon: "🌱" },
+          { order: 3, caption: "Watering the soil thoroughly with a green watering can.", icon: "🚿" },
+          { order: 4, caption: "Stepping back to admire the vibrant, flourishing garden bed.", icon: "🌸" }
+        ]
+      },
+      {
+        title: "Brewing a Soothing Pot of Afternoon Tea",
+        theme: "Relaxation & Warmth",
+        steps: [
+          { order: 1, caption: "Filling the kettle with fresh cool water and placing it on the stove.", icon: "🫖" },
+          { order: 2, caption: "The kettle whistles as the water reaches a rolling boil.", icon: "💨" },
+          { order: 3, caption: "Pouring steaming water over herbal tea leaves in a porcelain teapot.", icon: "🌿" },
+          { order: 4, caption: "Pouring soothing tea into a teacup with honey and a lemon slice.", icon: "☕" }
+        ]
+      },
+      {
+        title: "Painting a Watercolor Landscape",
+        theme: "Arts & Creativity",
+        steps: [
+          { order: 1, caption: "Setting up the easel, watercolor paper, brushes, and clean water jars.", icon: "🎨" },
+          { order: 2, caption: "Lightly sketching the mountain and lake horizon with a pencil.", icon: "✏️" },
+          { order: 3, caption: "Applying colorful sky and mountain washes with soft brush strokes.", icon: "🖌️" },
+          { order: 4, caption: "Displaying the completed landscape painting on the mantle.", icon: "🖼️" }
+        ]
+      },
+      {
+        title: "Making Fresh Homemade Lemonade",
+        theme: "Kitchen & Refreshment",
+        steps: [
+          { order: 1, caption: "Rolling and slicing fresh yellow lemons on a cutting board.", icon: "🍋" },
+          { order: 2, caption: "Squeezing the tart lemon juice through a strainer into a glass pitcher.", icon: "🫗" },
+          { order: 3, caption: "Stirring in pure cane sugar and cold spring water until dissolved.", icon: "🥄" },
+          { order: 4, caption: "Pouring over ice cubes with a fresh sprig of mint on the patio.", icon: "🧊" }
+        ]
+      }
+    ],
+    hard: [
+      {
+        title: "Baking Homemade Artisan Bread",
+        theme: "Baking & Cooking",
+        steps: [
+          { order: 1, caption: "Measuring flour, warm water, and yeast into a large mixing bowl.", icon: "🥣" },
+          { order: 2, caption: "Kneading the warm dough on a floured wooden board until elastic.", icon: "🧑‍🍳" },
+          { order: 3, caption: "Covering the bowl with a cloth and letting the dough rise in a warm spot.", icon: "🍞" },
+          { order: 4, caption: "Shaping the risen loaf and scoring the top crust with a sharp blade.", icon: "🔪" },
+          { order: 5, caption: "Baking in the hot oven until the crust turns deep golden brown.", icon: "🔥" },
+          { order: 6, caption: "Slicing the warm, crusty loaf and spreading delicious creamy butter.", icon: "🧈" }
+        ]
+      },
+      {
+        title: "Restoring a Classic Wooden Clock",
+        theme: "Craftsmanship & History",
+        steps: [
+          { order: 1, caption: "Inspecting the antique wooden clock on the workbench with a magnifying glass.", icon: "🔍" },
+          { order: 2, caption: "Carefully removing the back panel to inspect the brass gears and pendulum.", icon: "⚙️" },
+          { order: 3, caption: "Gently cleaning the brass movement and applying fine watchmaker oil.", icon: "🪛" },
+          { order: 4, caption: "Polishing the rich walnut cabinet with natural beeswax polish.", icon: "✨" },
+          { order: 5, caption: "Winding the spring mechanism with the original brass winding key.", icon: "🗝️" },
+          { order: 6, caption: "Setting the hands to the exact time as the chime rings melodiously.", icon: "🕰️" }
+        ]
+      },
+      {
+        title: "Preparing a Special Sunday Family Dinner",
+        theme: "Family & Celebration",
+        steps: [
+          { order: 1, caption: "Writing out the menu and shopping list in the kitchen.", icon: "📋" },
+          { order: 2, caption: "Selecting fresh vegetables, herbs, and bread at the farmers market.", icon: "🥕" },
+          { order: 3, caption: "Chopping vegetables and simmering a savory homemade roast.", icon: "🍲" },
+          { order: 4, caption: "Setting the dining table with fine plates, cloth napkins, and glassware.", icon: "🍽️" },
+          { order: 5, caption: "Welcoming loved ones at the front door with warm greetings.", icon: "👋" },
+          { order: 6, caption: "Sitting down together around the table enjoying dinner and laughter.", icon: "❤️" }
+        ]
+      }
+    ]
+  };
+
+  function setupStorySequence() {
+    var diffSelect = document.getElementById('difficulty-select');
+    if (diffSelect) {
+      currentDifficulty = diffSelect.value || currentDifficulty;
+    }
+
+    try {
+      var dataEl = document.getElementById('initial-story-data');
+      if (dataEl && dataEl.textContent.trim()) {
+        var parsed = JSON.parse(dataEl.textContent.trim());
+        if (parsed && parsed.steps && parsed.steps.length > 0) {
+          currentStory = parsed;
+        }
+      }
+    } catch (e) {
+      console.warn("Initial story parse note:", e);
+    }
+
+    if (!currentStory || !currentStory.steps || currentStory.steps.length === 0) {
+      var deck = storyDecks[currentDifficulty] || storyDecks.easy;
+      currentStory = deck[currentStoryIndex % deck.length];
+    }
+
+    initializeGame();
+  }
+
+  // Turbo + Standard load triggers
+  document.addEventListener('turbo:load', setupStorySequence);
+  document.addEventListener('DOMContentLoaded', setupStorySequence);
+  if (document.readyState !== 'loading') {
+    setTimeout(setupStorySequence, 10);
+  }
+
+  function changeDifficulty(diff) {
+    currentDifficulty = diff;
+    currentStoryIndex = 0;
+    var deck = storyDecks[diff] || storyDecks.easy;
+    currentStory = deck[0];
+    initializeGame();
+  }
+
+  function initializeGame() {
+    var deck = storyDecks[currentDifficulty] || storyDecks.easy;
+    if (!currentStory || !currentStory.steps || !Array.isArray(currentStory.steps) || currentStory.steps.length === 0) {
+      currentStory = deck[currentStoryIndex % deck.length];
+    }
+
+    setFeedback("👉 Tap a card on the left, then tap a slot on the right to arrange.", "normal");
+
+    var themeBadge = document.getElementById('story-theme-badge');
+    if (themeBadge) themeBadge.innerText = currentStory.theme || 'Everyday Routine';
+
+    var titleText = document.getElementById('story-title-text');
+    if (titleText) titleText.innerText = currentStory.title || 'Story Sequence';
+
+    var steps = currentStory.steps;
+    placedCards = {};
+    selectedPoolCard = null;
+
+    // Render Slots on Right Side
+    var slotsList = document.getElementById('target-slots-list');
+    if (!slotsList) return;
+    slotsList.innerHTML = '';
+
+    var ordinalNames = ['1st Step', '2nd Step', '3rd Step', '4th Step', '5th Step', '6th Step'];
+
+    steps.forEach(function(step, idx) {
+      var slotRow = document.createElement('div');
+      slotRow.className = 'target-slot-row';
+      slotRow.id = 'slot-' + idx;
+      slotRow.setAttribute('data-slot-index', idx);
+      
+      var badge = document.createElement('div');
+      badge.className = 'slot-label-badge';
+      badge.innerText = ordinalNames[idx] || ('Step ' + (idx + 1));
+      slotRow.appendChild(badge);
+
+      var placeholder = document.createElement('div');
+      placeholder.className = 'slot-placeholder-text';
+      placeholder.innerText = 'Tap or drop step ' + (idx + 1) + ' here';
+      slotRow.appendChild(placeholder);
+
+      // Drag & Drop listeners
+      slotRow.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        slotRow.classList.add('drag-over');
+      });
+      slotRow.addEventListener('dragleave', function() {
+        slotRow.classList.remove('drag-over');
+      });
+      slotRow.addEventListener('drop', function(e) {
+        e.preventDefault();
+        slotRow.classList.remove('drag-over');
+        var cardId = e.dataTransfer.getData('text/plain');
+        placeCardInSlot(cardId, idx);
+      });
+
+      // Tap listener
+      slotRow.addEventListener('click', function() {
+        if (selectedPoolCard) {
+          placeCardInSlot(selectedPoolCard.id, idx);
+          selectedPoolCard = null;
+          renderPool();
+        } else if (placedCards[idx]) {
+          returnCardToPool(idx);
+        }
+      });
+
+      slotsList.appendChild(slotRow);
+    });
+
+    // Create pool cards with unique ID
+    poolCards = steps.map(function(s, i) {
+      return {
+        order: s.order,
+        caption: s.caption,
+        icon: s.icon,
+        image_base64: s.image_base64,
+        id: 'card-' + i + '-' + (s.order || i)
+      };
+    });
+
+    // Shuffle pool cards
+    for (var i = poolCards.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = poolCards[i];
+      poolCards[i] = poolCards[j];
+      poolCards[j] = temp;
+    }
+
+    renderPool();
+  }
+
+  function renderPool() {
+    var poolList = document.getElementById('cards-pool-list');
+    if (!poolList) return;
+    poolList.innerHTML = '';
+
+    var availableCards = poolCards.filter(function(c) {
+      return !Object.values(placedCards).some(function(pc) {
+        return pc && pc.id === c.id;
+      });
+    });
+
+    var countText = document.getElementById('pool-count-text');
+    if (countText) countText.innerText = availableCards.length + ' left';
+
+    if (availableCards.length === 0) {
+      poolList.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #059669; font-weight: 800; font-size: 0.95rem; text-align: center; background: #f0fdf4; border-radius: 8px; border: 1.5px solid #059669; padding: 1rem;">✓ All cards placed! Click Check Order below.</div>';
+      return;
+    }
+
+    availableCards.forEach(function(card) {
+      var cardEl = createCardElement(card, false);
+      poolList.appendChild(cardEl);
+    });
+  }
+
+  function createCardElement(card, isInsideSlot) {
+    var cardEl = document.createElement('div');
+    cardEl.className = 'story-card-compact';
+    cardEl.id = card.id;
+    cardEl.draggable = !isInsideSlot;
+
+    if (!isInsideSlot && selectedPoolCard && selectedPoolCard.id === card.id) {
+      cardEl.classList.add('selected');
+    }
+
+    // Thumbnail Media Box
+    var mediaBox = document.createElement('div');
+    mediaBox.className = 'card-thumbnail-box';
+    if (card.image_base64 && card.image_base64.length > 50) {
+      var img = document.createElement('img');
+      img.src = 'data:image/jpeg;base64,' + card.image_base64;
+      img.alt = card.caption;
+      mediaBox.appendChild(img);
+    } else {
+      mediaBox.style.background = 'linear-gradient(135deg, #ede9fe 0%, #dcfce7 100%)';
+      mediaBox.innerHTML = '<span style="font-size: 2rem;">' + (card.icon || '🎬') + '</span>';
+    }
+    cardEl.appendChild(mediaBox);
+
+    // Caption Text
+    var caption = document.createElement('p');
+    caption.className = 'card-caption-compact';
+    caption.innerText = card.caption;
+    cardEl.appendChild(caption);
+
+    // Action Button
+    var actionBtn = document.createElement('button');
+    actionBtn.className = 'card-action-btn';
+
+    if (isInsideSlot) {
+      actionBtn.innerText = '✕ Remove';
+      actionBtn.style.background = '#fee2e2';
+      actionBtn.style.color = '#991b1b';
+    } else {
+      actionBtn.innerText = (selectedPoolCard && selectedPoolCard.id === card.id) ? '✓ Selected' : 'Tap to Place';
+    }
+    cardEl.appendChild(actionBtn);
+
+    // Drag & Click Events
+    if (!isInsideSlot) {
+      cardEl.addEventListener('dragstart', function(e) {
+        e.dataTransfer.setData('text/plain', card.id);
+        cardEl.classList.add('dragging');
+      });
+      cardEl.addEventListener('dragend', function() {
+        cardEl.classList.remove('dragging');
+      });
+
+      cardEl.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (selectedPoolCard && selectedPoolCard.id === card.id) {
+          selectedPoolCard = null;
+        } else {
+          selectedPoolCard = card;
+        }
+        renderPool();
+      });
+    }
+
+    return cardEl;
+  }
+
+  function placeCardInSlot(cardId, slotIndex) {
+    var card = poolCards.find(function(c) { return c.id === cardId; });
+    if (!card) return;
+
+    // If card was already in another slot, remove it from that slot
+    Object.keys(placedCards).forEach(function(key) {
+      if (placedCards[key] && placedCards[key].id === cardId) {
+        delete placedCards[key];
+        clearSlotView(key);
+      }
+    });
+
+    placedCards[slotIndex] = card;
+    renderSlot(slotIndex, card);
+    renderPool();
+    
+    var slotEl = document.getElementById('slot-' + slotIndex);
+    if (slotEl) {
+      slotEl.classList.remove('wrong', 'correct');
+    }
+  }
+
+  function renderSlot(slotIndex, card) {
+    var slotRow = document.getElementById('slot-' + slotIndex);
+    if (!slotRow) return;
+    slotRow.classList.add('filled');
+    slotRow.innerHTML = '';
+
+    var ordinalNames = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
+    var badge = document.createElement('div');
+    badge.className = 'slot-label-badge';
+    badge.innerText = ordinalNames[slotIndex] || ('#' + (slotIndex + 1));
+    slotRow.appendChild(badge);
+
+    var cardEl = createCardElement(card, true);
+    cardEl.style.boxShadow = 'none';
+    cardEl.style.border = 'none';
+    cardEl.style.background = 'transparent';
+    cardEl.style.padding = '0';
+    cardEl.style.flex = '1';
+
+    cardEl.querySelector('.card-action-btn').onclick = function(e) {
+      e.stopPropagation();
+      returnCardToPool(slotIndex);
+    };
+
+    slotRow.appendChild(cardEl);
+  }
+
+  function clearSlotView(slotIndex) {
+    var slotRow = document.getElementById('slot-' + slotIndex);
+    if (!slotRow) return;
+    slotRow.classList.remove('filled', 'correct', 'wrong');
+    slotRow.innerHTML = '';
+
+    var ordinalNames = ['1st Step', '2nd Step', '3rd Step', '4th Step', '5th Step', '6th Step'];
+    var badge = document.createElement('div');
+    badge.className = 'slot-label-badge';
+    badge.innerText = ordinalNames[slotIndex] || ('Step ' + (slotIndex + 1));
+    slotRow.appendChild(badge);
+
+    var placeholder = document.createElement('div');
+    placeholder.className = 'slot-placeholder-text';
+    placeholder.innerText = 'Tap or drop step ' + (parseInt(slotIndex) + 1) + ' here';
+    slotRow.appendChild(placeholder);
+  }
+
+  function returnCardToPool(slotIndex) {
+    delete placedCards[slotIndex];
+    clearSlotView(slotIndex);
+    renderPool();
+  }
+
+  function resetPlacedCards() {
+    placedCards = {};
+    selectedPoolCard = null;
+    if (currentStory && currentStory.steps) {
+      currentStory.steps.forEach(function(_, idx) { clearSlotView(idx); });
+    }
+    // Re-shuffle pool
+    for (var i = poolCards.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = poolCards[i];
+      poolCards[i] = poolCards[j];
+      poolCards[j] = temp;
+    }
+    renderPool();
+    setFeedback("🔄 Reset complete. Cards are shuffled. Choose a card on the left to start.", "normal");
+  }
+
+  function checkSequence() {
+    if (!currentStory || !currentStory.steps) return;
+    var totalSteps = currentStory.steps.length;
+    var allFilled = true;
+    var allCorrect = true;
+
+    for (var i = 0; i < totalSteps; i++) {
+      var slotRow = document.getElementById('slot-' + i);
+      var card = placedCards[i];
+
+      if (!card) {
+        allFilled = false;
+        if (slotRow) slotRow.classList.remove('correct', 'wrong');
+      } else if (card.order === (i + 1)) {
+        if (slotRow) {
+          slotRow.classList.add('correct');
+          slotRow.classList.remove('wrong');
+        }
+      } else {
+        allCorrect = false;
+        if (slotRow) {
+          slotRow.classList.add('wrong');
+          slotRow.classList.remove('correct');
+        }
+      }
+    }
+
+    if (!allFilled) {
+      setFeedback("⚠️ Please place all cards into the slots before checking.", "warning");
+    } else if (allCorrect) {
+      setFeedback("🎉 Outstanding! You placed every scene in perfect logical order!", "success");
+      if ('speechSynthesis' in window) {
+        var fullStoryText = currentStory.steps.map(function(s) { return s.caption; }).join(' ');
+        var utter = new SpeechSynthesisUtterance("Wonderful job! " + fullStoryText);
+        window.speechSynthesis.speak(utter);
+      }
+    } else {
+      setFeedback("🔍 Almost there! Green slots are correct. Red slots need to be swapped.", "error");
+    }
+  }
+
+  function setFeedback(msg, type) {
+    var banner = document.getElementById('feedback-banner');
+    if (!banner) return;
+    banner.innerHTML = msg;
+    if (type === 'success') {
+      banner.style.color = '#065f46';
+    } else if (type === 'error') {
+      banner.style.color = '#991b1b';
+    } else if (type === 'warning') {
+      banner.style.color = '#92400e';
+    } else {
+      banner.style.color = '#0f172a';
+    }
+  }
+
+  function provideHint() {
+    if (!currentStory || !currentStory.steps) return;
+    var totalSteps = currentStory.steps.length;
+    for (var i = 0; i < totalSteps; i++) {
+      var correctStepOrder = i + 1;
+      var currentPlaced = placedCards[i];
+      
+      if (!currentPlaced || currentPlaced.order !== correctStepOrder) {
+        var correctCard = poolCards.find(function(c) { return c.order === correctStepOrder; });
+        if (correctCard) {
+          setFeedback('💡 Hint: Step ' + correctStepOrder + ' is "' + correctCard.caption + '"', 'warning');
+          return;
+        }
+      }
+    }
+    setFeedback("💡 Hint: All slots look great! Click '✓ Check Order'!", "success");
+  }
+
+  function readStoryAloud() {
+    if (!currentStory || !currentStory.steps) return;
+    if (!('speechSynthesis' in window)) {
+      alert("Text-to-speech is not supported on this browser.");
+      return;
+    }
+    window.speechSynthesis.cancel();
+    var titleText = currentStory.title || 'Story Sequence';
+    var fullStoryText = currentStory.steps.map(function(s, i) { return 'Step ' + (i + 1) + ': ' + s.caption; }).join('. ');
+    var utter = new SpeechSynthesisUtterance(titleText + '. ' + fullStoryText);
+    window.speechSynthesis.speak(utter);
+  }
+
+  function loadNewStory() {
+    // 1. Immediately rotate to next story in local deck for instant response
+    currentStoryIndex++;
+    var deck = storyDecks[currentDifficulty] || storyDecks.easy;
+    currentStory = deck[currentStoryIndex % deck.length];
+    initializeGame();
+    setFeedback("✨ Loaded new story: " + currentStory.title + ". Generating fresh Gemini AI story in background...", "normal");
+
+    // 2. Fetch fresh personalized AI story in background
+    fetch('/api/games/generate_story_sequence', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ difficulty: currentDifficulty })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.success && data.story && data.story.steps && data.story.steps.length > 0) {
+        // Add AI generated story into the deck
+        deck.push(data.story);
+      }
+    })
+    .catch(function(err) {
+      console.log("Background AI story generation note:", err);
+    });
+  }
+</script>

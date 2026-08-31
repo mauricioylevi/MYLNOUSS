@@ -1,27 +1,71 @@
 :root {
-    /* Color Palette */
+    /* Bright Anti-Glare Canvas */
+    --color-bg-canvas: #f8fafc;
     --color-bg-primary: #ffffff;
-    --color-bg-secondary: #f8fafc;
-    --color-bg-gradient-start: #eef2ff;
-    --color-bg-gradient-end: #ffffff;
+    --color-bg-secondary: #f1f5f9;
+    --color-bg-surface: #ffffff;
+    --color-bg-sidebar: #f8fafc;
     
-    --color-text-main: #0f172a;
-    --color-text-muted: #475569;
+    /* High Contrast Black Outline & Text */
+    --color-border-black: #000000;
+    --color-text-main: #000000;
+    --color-text-dark: #000000;
+    --color-text-light: #ffffff;
+    --color-text-muted: #334155;
+    --color-text-subtle: #475569;
     
-    --color-primary: #10b981;
-    --color-primary-hover: #059669;
+    /* Category 1: Fresh Emerald Green (Personal & Family) */
+    --color-green-card-bg: #dcfce7;
+    --color-green-border: #000000;
+    --color-green-header: #065f46;
+    --color-green-primary: #059669;
+    --color-green-hover: #047857;
+    --color-green-light: #d1fae5;
+    --color-primary: #059669;
+    --color-primary-hover: #047857;
     --color-primary-light: #d1fae5;
     
+    /* Category 2: Calming Azure Blue (Daily Journal) */
+    --color-blue-card-bg: #dbeafe;
+    --color-blue-border: #000000;
+    --color-blue-header: #1e40af;
+    --color-blue-primary: #2563eb;
+    --color-blue-hover: #1d4ed8;
+    --color-blue-light: #dbeafe;
+    --color-blue: #2563eb;
+    
+    /* Category 3: Soothing Royal Violet (Brain & Memory Games) */
+    --color-purple-card-bg: #ede9fe;
+    --color-purple-border: #000000;
+    --color-purple-header: #5b21b6;
+    --color-purple-primary: #7c3aed;
+    --color-purple-hover: #6d28d9;
+    --color-purple-light: #f3e8ff;
+    
+    /* Category 4: Warm Teal (Care & Activity Reports) */
+    --color-teal-card-bg: #ccfbf1;
+    --color-teal-border: #000000;
+    --color-teal-header: #115e59;
+    --color-teal-primary: #0f766e;
+    --color-teal-hover: #134e4a;
+    --color-teal-light: #ccfbf1;
+
+    /* Card & Surfaces */
     --color-card-bg: #ffffff;
-    --color-border: #e2e8f0;
+    --color-border: #000000;
+    --color-border-dark: #000000;
+    --color-border-hover: #000000;
     
     /* Typography */
     --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
     
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    /* High Definition Relief Shadows (Neo-Tactile Style) */
+    --shadow-relief-sm: 2px 2px 0px #000000;
+    --shadow-relief-md: 4px 4px 0px #000000;
+    --shadow-relief-lg: 6px 6px 0px #000000;
+    --shadow-sm: 2px 2px 0px #000000;
+    --shadow-md: 4px 4px 0px #000000;
+    --shadow-lg: 6px 6px 0px #000000;
     
     /* Spacing & Layout */
     --spacing-1: 0.25rem;
@@ -32,35 +76,62 @@
     --spacing-8: 2rem;
     --spacing-12: 3rem;
     
-    --layout-sidebar-width: 280px;
+    --layout-sidebar-width: 320px;
     --layout-navbar-height: 65px;
     
     /* Radii */
-    --radius-md: 0.5rem;
+    --radius-sm: 0.375rem;
+    --radius-md: 0.75rem;
     --radius-lg: 1rem;
-    --radius-xl: 1.5rem;
+    --radius-xl: 1.25rem;
     --radius-full: 9999px;
     
     /* Transitions */
     --transition-fast: 150ms ease-in-out;
-    --transition-normal: 300ms ease;
+    --transition-normal: 200ms ease;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --color-bg-primary: #0f172a;
-        --color-bg-secondary: #1e293b;
-        --color-bg-gradient-start: #1e1b4b;
-        --color-bg-gradient-end: #0f172a;
-        
-        --color-text-main: #f8fafc;
-        --color-text-muted: #94a3b8;
-        
-        --color-primary: #34d399;
-        --color-primary-hover: #6ee7b7;
-        --color-primary-light: #064e3b;
-        
-        --color-card-bg: #1e293b;
-        --color-border: #334155;
-    }
+/* ==========================================================================
+   Dynamic Category Theme Canvas Backgrounds (Neo-Tactile Colors)
+   ========================================================================== */
+body[data-theme-category="green"],
+body.theme-category-green,
+.theme-category-green.app-shell,
+.theme-category-green .app-content,
+[data-theme-category="green"] .app-content {
+    background-color: var(--color-green-card-bg) !important;
 }
+
+body[data-theme-category="blue"],
+body.theme-category-blue,
+.theme-category-blue.app-shell,
+.theme-category-blue .app-content,
+[data-theme-category="blue"] .app-content {
+    background-color: var(--color-blue-card-bg) !important;
+}
+
+body[data-theme-category="purple"],
+body.theme-category-purple,
+.theme-category-purple.app-shell,
+.theme-category-purple .app-content,
+[data-theme-category="purple"] .app-content {
+    background-color: var(--color-purple-card-bg) !important;
+}
+
+body[data-theme-category="teal"],
+body.theme-category-teal,
+.theme-category-teal.app-shell,
+.theme-category-teal .app-content,
+[data-theme-category="teal"] .app-content {
+    background-color: var(--color-teal-card-bg) !important;
+}
+
+body[data-theme-category="neutral"],
+body.theme-category-neutral,
+.theme-category-neutral.app-shell,
+.theme-category-neutral .app-content,
+[data-theme-category="neutral"] .app-content {
+    background-color: var(--color-bg-canvas) !important;
+}
+
+

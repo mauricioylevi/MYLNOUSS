@@ -34,9 +34,11 @@ Rails.application.routes.draw do
   get 'games/create_a_story', to: 'games#create_a_story'
   get 'games/critical_thinking', to: 'games#critical_thinking'
   get 'games/lets_talk', to: 'games#lets_talk'
+  get 'games/story_sequence', to: 'games#story_sequence'
   
   post 'api/games/generate_critical_thinking', to: 'games#generate_critical_thinking'
   post 'api/games/generate_lets_talk', to: 'games#generate_lets_talk'
+  post 'api/games/generate_story_sequence', to: 'games#generate_story_sequence'
   
   post 'api/story/prompts', to: 'games#story_prompts'
   post 'api/story/ai_turn', to: 'games#story_ai_turn'
@@ -47,11 +49,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :guests, only: [:index, :new, :create, :update, :destroy] do
-    collection do
-      post :generate_main_user_token
-    end
-  end
+  get 'main_user_access', to: 'main_user_access#index'
+  post 'main_user_access/generate_token', to: 'main_user_access#generate_token'
+  post 'main_user_access/revoke_token', to: 'main_user_access#revoke_token'
+
+  resources :guests, only: [:index, :new, :create, :update, :destroy]
   resources :guest_registrations, only: [:new, :create]
 
   namespace :api do

@@ -23,7 +23,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="dashboard-body">
+  <body class="dashboard-body theme-category-<%= current_category_theme %>" data-theme-category="<%= current_category_theme %>">
     
 
     <!-- Top Navigation -->
@@ -32,112 +32,181 @@
                 <span style="color: var(--color-primary); font-size: 1.4rem;">🍃</span>
                 MYLNOUSS
             </div>
-            <div class="navbar-actions">
-                <a href="/public/site" target="_blank" class="btn btn-outline" style="border-radius: 50px; font-size: 0.85rem; padding: 0.35rem 1rem; text-decoration: none; display: inline-flex; align-items: center;">View Live Site &nearr;</a>
-                <div class="avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">AD</div>
-            </div>
         </nav>
 
-    <div class="app-shell">
+    <div class="app-shell theme-category-<%= current_category_theme %>" data-theme-category="<%= current_category_theme %>">
             <!-- Left Sidebar -->
             <aside class="app-sidebar">
                 
-                <!-- System Setup Block -->
-                <div class="sidebar-block">
+                <!-- Personal & Family (Green Accent) -->
+                <div class="sidebar-block sidebar-block--green">
                     <div class="sidebar-block-title">
-                        <span>⚙️</span> System Setup
+                        <span>🌿</span> Personal & Family
                     </div>
                     <ul class="sidebar-menu">
                         <li>
                             <a href="/profile" class="sidebar-link <%= 'active' if current_page?('/profile') %>">
-                                <span>👥</span> User Profile
+                                <div class="link-icon-box">👤</div>
+                                <div class="link-text-group">
+                                    <span class="link-title">About Me & Details</span>
+                                    <span class="link-subtitle">My story & preferences</span>
+                                </div>
                             </a>
                         </li>
                         <li>
                             <a href="/photos" class="sidebar-link <%= 'active' if controller_name == 'photos' %>">
-                                <span>📸</span> Post Photos
+                                <div class="link-icon-box">📸</div>
+                                <div class="link-text-group">
+                                    <span class="link-title">My Photo Album</span>
+                                    <span class="link-subtitle">Favorite family pictures & stories</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/main_user_access" class="sidebar-link <%= 'active' if controller_name == 'main_user_access' %>">
+                                <div class="link-icon-box">🔑</div>
+                                <div class="link-text-group">
+                                    <span class="link-title">Main User Access</span>
+                                    <span class="link-subtitle">Direct login token & kiosk setup</span>
+                                </div>
                             </a>
                         </li>
                         <li>
                             <a href="<%= guests_path %>" class="sidebar-link <%= 'active' if controller_name == 'guests' %>">
-                                <span>🔒</span> Access Control
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="sidebar-link">
-                                <span>💳</span> Subscription
+                                <div class="link-icon-box">👥</div>
+                                <div class="link-text-group">
+                                    <span class="link-title">Family & Loved Ones</span>
+                                    <span class="link-subtitle">Invite family members & helpers</span>
+                                </div>
                             </a>
                         </li>
                     </ul>
                 </div>
 
-                <!-- Features Block -->
-                <div class="sidebar-block">
+                <!-- Daily Journal (Blue Accent) -->
+                <div class="sidebar-block sidebar-block--blue">
                     <div class="sidebar-block-title">
-                        <span>🧩</span> Reports
+                        <span>📓</span> My Daily Journal
                     </div>
                     <ul class="sidebar-menu">
                         <li>
-                            <a href="<%= reports_guest_access_path %>" class="sidebar-link <%= 'active' if controller_name == 'reports' && action_name == 'guest_access' %>">
-                                <span>📊</span> Guest Report
+                            <a href="<%= today_daily_journals_path %>" class="sidebar-link <%= 'active' if controller_name == 'daily_journals' && action_name == 'today' %>">
+                                <div class="link-icon-box">✍️</div>
+                                <div class="link-text-group">
+                                    <span class="link-title">Today's Journal</span>
+                                    <span class="link-subtitle">Write or speak today's thoughts</span>
+                                </div>
                             </a>
                         </li>
                         <li>
-                            <a href="<%= reports_wellness_path %>" class="sidebar-link <%= 'active' if controller_name == 'reports' && action_name == 'wellness' %>">
-                                <span>📈</span> Usage Report
-                            </a>
-                        </li>
-                        <li>
-                            <a href="<%= reports_log_report_path %>" class="sidebar-link <%= 'active' if controller_name == 'reports' && action_name == 'log_report' %>">
-                                <span>📅</span> Log Report
+                            <a href="<%= daily_journals_path %>" class="sidebar-link <%= 'active' if controller_name == 'daily_journals' && (action_name == 'index' || action_name == 'show') %>">
+                                <div class="link-icon-box">📖</div>
+                                <div class="link-text-group">
+                                    <span class="link-title">Past Memories & Journal</span>
+                                    <span class="link-subtitle">Look back at cherished memories</span>
+                                </div>
                             </a>
                         </li>
                     </ul>
                 </div>
 
-                <!-- Play Block -->
-                <div class="sidebar-block">
+                <!-- Fun Brain Games (Purple Accent) -->
+                <div class="sidebar-block sidebar-block--purple">
                     <div class="sidebar-block-title">
-                        <span>🎲</span> Play
+                        <span>🧩</span> Fun Brain Games
                     </div>
                     <ul class="sidebar-menu">
                         <li>
                             <a href="#" class="sidebar-link" onclick="toggleSidebarDropdown(event, 'games-dropdown', 'games-arrow')">
-                                <span>🧩</span> Enjoy Games
+                                <div class="link-icon-box">🎮</div>
+                                <div class="link-text-group">
+                                    <span class="link-title">Choose a Game</span>
+                                    <span class="link-subtitle">13 relaxing & engaging activities</span>
+                                </div>
                                 <span class="dropdown-arrow" id="games-arrow">▼</span>
                             </a>
-                            <div class="sidebar-dropdown" id="games-dropdown" style="<%= 'display: block;' if controller_name == 'games' %>">
-                                <a href="/games/gallery" class="sidebar-dropdown-link <%= 'active' if action_name == 'gallery' %>">Photo Gallery</a>
-                                <a href="/games/photo_memory" class="sidebar-dropdown-link <%= 'active' if action_name == 'photo_memory' %>">Photo Memory</a>
-                                <a href="/games/career_quiz" class="sidebar-dropdown-link <%= 'active' if action_name == 'career_quiz' %>">Career Quiz</a>
-                                <a href="#" class="sidebar-dropdown-link" onclick="openProfileQuizModal(event)">Picturez Quiz</a>
-                                <a href="#" class="sidebar-dropdown-link" onclick="openCardsMatchModal(event)">Cards Match</a>
-                                <a href="/games/crossword" class="sidebar-dropdown-link <%= 'active' if action_name == 'crossword' %>">Crossword</a>
-                                <a href="/games/missing_word" class="sidebar-dropdown-link <%= 'active' if action_name == 'missing_word' %>">Missing Word</a>
-                                <a href="/games/tic_tac_toe" class="sidebar-dropdown-link <%= 'active' if action_name == 'tic_tac_toe' %>">Tic-Tac-Toe</a>
-                                <a href="/games/word_search" class="sidebar-dropdown-link <%= 'active' if action_name == 'word_search' %>">Word Search</a>
-                                <a href="/games/create_a_story" class="sidebar-dropdown-link <%= 'active' if action_name == 'create_a_story' %>">Create a Story</a>
-                                <a href="/games/critical_thinking" class="sidebar-dropdown-link <%= 'active' if action_name == 'critical_thinking' %>">Critical Thinking</a>
-                                <a href="/games/lets_talk" class="sidebar-dropdown-link <%= 'active' if action_name == 'lets_talk' %>">Let's Talk</a>
+                            <div class="sidebar-dropdown <%= 'open' if controller_name == 'games' %>" id="games-dropdown" style="<%= 'display: flex;' if controller_name == 'games' %>">
+                                
+                                <div class="sidebar-dropdown-group-header"><span>🖼️</span> Photo & Story Fun</div>
+                                <a href="/games/story_sequence" class="sidebar-dropdown-link <%= 'active' if action_name == 'story_sequence' %>">
+                                    <span>🎬</span> Story Sequence
+                                </a>
+                                <a href="/games/gallery" class="sidebar-dropdown-link <%= 'active' if action_name == 'gallery' %>">
+                                    <span>🖼️</span> Photo Album Gallery
+                                </a>
+                                <a href="/games/photo_memory" class="sidebar-dropdown-link <%= 'active' if action_name == 'photo_memory' %>">
+                                    <span>🧠</span> Remember That Picture
+                                </a>
+                                <a href="/games/career_quiz" class="sidebar-dropdown-link <%= 'active' if action_name == 'career_quiz' %>">
+                                    <span>🎓</span> Life & Career Trivia
+                                </a>
+                                <a href="#" class="sidebar-dropdown-link" onclick="openProfileQuizModal(event)">
+                                    <span>❓</span> Picture Quiz
+                                </a>
+
+                                <div class="sidebar-dropdown-group-header"><span>🔤</span> Words & Matching</div>
+                                <a href="#" class="sidebar-dropdown-link" onclick="openCardsMatchModal(event)">
+                                    <span>🃏</span> Match the Cards
+                                </a>
+                                <a href="/games/crossword" class="sidebar-dropdown-link <%= 'active' if action_name == 'crossword' %>">
+                                    <span>✏️</span> Crossword Puzzle
+                                </a>
+                                <a href="/games/missing_word" class="sidebar-dropdown-link <%= 'active' if action_name == 'missing_word' %>">
+                                    <span>🔍</span> Fill Missing Word
+                                </a>
+                                <a href="/games/word_search" class="sidebar-dropdown-link <%= 'active' if action_name == 'word_search' %>">
+                                    <span>🔠</span> Word Search
+                                </a>
+
+                                <div class="sidebar-dropdown-group-header"><span>💬</span> Conversation & Joy</div>
+                                <a href="/games/create_a_story" class="sidebar-dropdown-link <%= 'active' if action_name == 'create_a_story' %>">
+                                    <span>📖</span> Create a Story
+                                </a>
+                                <a href="/games/critical_thinking" class="sidebar-dropdown-link <%= 'active' if action_name == 'critical_thinking' %>">
+                                    <span>💡</span> Daily Brain Stretch
+                                </a>
+                                <a href="/games/lets_talk" class="sidebar-dropdown-link <%= 'active' if action_name == 'lets_talk' %>">
+                                    <span>💬</span> Let's Talk!
+                                </a>
+                                <a href="/games/tic_tac_toe" class="sidebar-dropdown-link <%= 'active' if action_name == 'tic_tac_toe' %>">
+                                    <span>⭕</span> Tic-Tac-Toe
+                                </a>
                             </div>
                         </li>
                     </ul>
                 </div>
 
-                <!-- Daily Journal Block -->
-                <div class="sidebar-block">
+                <!-- Care & Activity Reports (Teal Accent) -->
+                <div class="sidebar-block sidebar-block--teal">
                     <div class="sidebar-block-title">
-                        <span>📓</span> Daily Journal
+                        <span>📊</span> Care & Activity Reports
                     </div>
                     <ul class="sidebar-menu">
                         <li>
-                            <a href="<%= today_daily_journals_path %>" class="sidebar-link <%= 'active' if controller_name == 'daily_journals' && action_name == 'today' %>">
-                                <span>✍️</span> Keep Journal
+                            <a href="<%= reports_guest_access_path %>" class="sidebar-link <%= 'active' if controller_name == 'reports' && action_name == 'guest_access' %>">
+                                <div class="link-icon-box">📊</div>
+                                <div class="link-text-group">
+                                    <span class="link-title">Family Visits & Activity</span>
+                                    <span class="link-subtitle">Visits and shared photos</span>
+                                </div>
                             </a>
                         </li>
                         <li>
-                            <a href="<%= daily_journals_path %>" class="sidebar-link <%= 'active' if controller_name == 'daily_journals' && (action_name == 'index' || action_name == 'show') %>">
-                                <span>📓</span> Journal History
+                            <a href="<%= reports_wellness_path %>" class="sidebar-link <%= 'active' if controller_name == 'reports' && action_name == 'wellness' %>">
+                                <div class="link-icon-box">📈</div>
+                                <div class="link-text-group">
+                                    <span class="link-title">Activity & Wellness</span>
+                                    <span class="link-subtitle">Games played & journal streaks</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<%= reports_log_report_path %>" class="sidebar-link <%= 'active' if controller_name == 'reports' && action_name == 'log_report' %>">
+                                <div class="link-icon-box">📅</div>
+                                <div class="link-text-group">
+                                    <span class="link-title">Safety & Activity Log</span>
+                                    <span class="link-subtitle">App access and security records</span>
+                                </div>
                             </a>
                         </li>
                     </ul>
@@ -251,57 +320,55 @@
     </style>
 
     <!-- Cards Match Modal -->
-    <div class="modal-overlay" id="cards-match-modal" style="z-index: 9998; background: rgba(0, 0, 0, 0.7);">
-        <div id="cards-match-modal-content" class="modal-content" style="max-width: 700px; width: 95%; min-height: 600px; display: flex; flex-direction: column; background: var(--color-bg); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); transition: max-width 0.4s ease;">
+    <div class="modal-overlay" id="cards-match-modal" style="z-index: 9998; background: rgba(0, 0, 0, 0.7); display: none; align-items: center; justify-content: center;">
+        <div id="cards-match-modal-content" class="modal-content" style="max-width: 800px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; background: #ffffff; border-radius: 14px; overflow: hidden; border: 2px solid #000000; box-shadow: var(--shadow-relief-lg); transition: max-width 0.3s ease;">
             
-            <div class="modal-header" style="background: white; border-bottom: 1px solid var(--color-border); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h2 style="font-size: 1.8rem; font-weight: 700; color: var(--color-text-main); margin: 0; display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="font-size: 2rem;">🎴</span> Cards Match
+            <div class="modal-header" style="background: #ffffff; border-bottom: 2px solid #000000; padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 1.5rem; background: #ede9fe; padding: 0.2rem 0.4rem; border-radius: 6px; border: 1.5px solid #000000;">🎴</span>
+                    <h2 style="font-size: 1.25rem; font-weight: 900; color: #000000; margin: 0;">
+                        Cards Match
                     </h2>
                 </div>
+                <button class="btn btn-outline btn-compact" onclick="closeCardsMatchModal()" style="border-radius: 50px; font-weight: 800; border: 1.5px solid #000000;" title="Close Game">✕ Close</button>
             </div>
 
-            <!-- Game Screen -->
-            <div id="cards-match-game-screen" class="modal-body" style="padding: 2rem; flex-grow: 1; display: none; flex-direction: column; background: var(--color-bg); align-items: center;">
-                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    
-                    <div style="display: flex; gap: 0.5rem; background: var(--color-bg-secondary); padding: 0.25rem; border-radius: 8px; border: 1px solid var(--color-border);">
-                        <button id="cm-btn-easy" class="btn" onclick="startCardsMatch('easy')" style="padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600;">Easy</button>
-                        <button id="cm-btn-medium" class="btn btn-outline" onclick="startCardsMatch('medium')" style="padding: 0.5rem 1rem; border-radius: 6px; border: none; font-weight: 600;">Medium</button>
-                        <button id="cm-btn-hard" class="btn btn-outline" onclick="startCardsMatch('hard')" style="padding: 0.5rem 1rem; border-radius: 6px; border: none; font-weight: 600;">Hard</button>
+            <!-- Game Screen (Top Aligned) -->
+            <div id="cards-match-game-screen" class="modal-body" style="padding: 1rem 1.5rem; flex-grow: 1; display: none; flex-direction: column; background: #ffffff; align-items: center; overflow-y: auto;">
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 0.35rem; background: #f8fafc; padding: 0.2rem; border-radius: 50px; border: 1.5px solid #000000;">
+                        <button id="cm-btn-easy" class="btn btn-compact" onclick="startCardsMatch('easy')" style="padding: 0.3rem 0.85rem; border-radius: 50px; font-weight: 800; font-size: 0.82rem;">Easy</button>
+                        <button id="cm-btn-medium" class="btn btn-outline btn-compact" onclick="startCardsMatch('medium')" style="padding: 0.3rem 0.85rem; border-radius: 50px; border: none; font-weight: 800; font-size: 0.82rem;">Medium</button>
+                        <button id="cm-btn-hard" class="btn btn-outline btn-compact" onclick="startCardsMatch('hard')" style="padding: 0.3rem 0.85rem; border-radius: 50px; border: none; font-weight: 800; font-size: 0.82rem;">Hard</button>
                     </div>
 
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <span id="cards-match-stats" style="font-size: 1.2rem; font-weight: 600; color: var(--color-text-main);">Matches: 0 / 4</span>
-                        <button class="btn btn-outline" onclick="closeCardsMatchModal()" style="border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; padding: 0; color: #F44336; border-color: #F44336;" title="Close Game">✕</button>
-                    </div>
+                    <span id="cards-match-stats" style="font-size: 1rem; font-weight: 800; color: #5b21b6; background: #ede9fe; border: 1px solid #000000; padding: 0.25rem 0.85rem; border-radius: 50px;">Matches: 0 / 4</span>
                 </div>
                 
-                <div id="cards-match-board" style="display: grid; gap: 1rem; width: 100%; max-width: 1000px; margin: 0 auto; perspective: 1000px;">
+                <div id="cards-match-board" style="display: grid; gap: 0.75rem; width: 100%; max-width: 750px; margin: 0 auto; perspective: 1000px;">
                     <!-- Cards injected here via JS -->
                 </div>
             </div>
 
             <!-- Loading Screen -->
-            <div id="cards-match-loading-screen" class="modal-body" style="padding: 4rem 2rem; flex-grow: 1; display: none; flex-direction: column; align-items: center; justify-content: center; background: var(--color-bg); text-align: center;">
-                <span style="font-size: 4rem; display: block; margin-bottom: 1rem; animation: pulse 2s infinite;">⏳</span>
-                <h3 style="font-size: 1.5rem; color: var(--color-text-main); margin: 0 0 1rem 0;">Shuffling the Deck...</h3>
-                <p style="font-size: 1.1rem; color: var(--color-text-muted); max-width: 400px; margin: 0 auto;">
-                    We are gathering photos and setting up the board. This might take a few moments if the AI is drawing new pictures!
+            <div id="cards-match-loading-screen" class="modal-body" style="padding: 2.5rem 1.5rem; flex-grow: 1; display: none; flex-direction: column; align-items: center; justify-content: center; background: #ffffff; text-align: center;">
+                <span style="font-size: 3rem; display: block; margin-bottom: 0.75rem; animation: pulse 2s infinite;">⏳</span>
+                <h3 style="font-size: 1.3rem; font-weight: 900; color: #000000; margin: 0 0 0.5rem 0;">Shuffling the Deck...</h3>
+                <p style="font-size: 0.95rem; font-weight: 600; color: #64748b; max-width: 400px; margin: 0 auto;">
+                    Gathering photos and setting up the board.
                 </p>
             </div>
 
             <!-- End Screen -->
-            <div id="cards-match-end-screen" class="modal-body" style="padding: 4rem 2rem; flex-grow: 1; display: none; flex-direction: column; align-items: center; justify-content: center; background: var(--color-bg); text-align: center;">
-                <span style="font-size: 5rem; display: block; margin-bottom: 1rem;">🎉</span>
-                <h3 style="font-size: 2.5rem; color: var(--color-text-main); margin: 0 0 1rem 0;">You Won!</h3>
-                <p id="cards-match-end-text" style="font-size: 1.2rem; color: var(--color-text-muted); margin: 0 0 2rem 0;">
+            <div id="cards-match-end-screen" class="modal-body" style="padding: 2.5rem 1.5rem; flex-grow: 1; display: none; flex-direction: column; align-items: center; justify-content: center; background: #ffffff; text-align: center;">
+                <span style="font-size: 4rem; display: block; margin-bottom: 0.5rem;">🎉</span>
+                <h3 style="font-size: 2rem; font-weight: 900; color: #000000; margin: 0 0 0.5rem 0;">You Won!</h3>
+                <p id="cards-match-end-text" style="font-size: 1.05rem; font-weight: 600; color: #475569; margin: 0 0 1.5rem 0;">
                     You successfully found all matching pairs!
                 </p>
                 <div style="display: flex; gap: 1rem;">
-                    <button class="btn btn-outline" onclick="startCardsMatch(window.cmState.currentDifficulty)">Play Again</button>
-                    <button class="btn btn-primary" onclick="closeCardsMatchModal()">Exit</button>
+                    <button class="btn btn-primary" style="padding: 0.6rem 1.75rem; border-radius: 50px; font-weight: 800; border: 2px solid #000000; box-shadow: 2px 2px 0px #000000;" onclick="startCardsMatch(window.cmState.currentDifficulty)">Play Again</button>
+                    <button class="btn btn-outline" style="padding: 0.6rem 1.75rem; border-radius: 50px; font-weight: 800; border: 2px solid #000000; box-shadow: 2px 2px 0px #000000;" onclick="closeCardsMatchModal()">Exit</button>
                 </div>
             </div>
             

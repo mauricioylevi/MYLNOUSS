@@ -1,43 +1,61 @@
 <main class="app-content">
 <div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; width: 100%;">
-  <div style="margin-bottom: 2rem;">
-    <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--color-text-main); margin: 0;">Guest Report</h1>
-    <p style="font-size: 1.1rem; color: var(--color-text-muted); margin: 0.5rem 0 0 0;">Review all invited guests and their system permissions.</p>
+  
+  <!-- Header -->
+  <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <span style="font-size: 2.2rem; background: #ccfbf1; padding: 0.4rem 0.6rem; border-radius: 12px; border: 2px solid #000000; box-shadow: 2px 2px 0px #000000;">👥</span>
+      <div>
+        <h1 style="font-size: 2.2rem; font-weight: 900; color: #000000; margin: 0; letter-spacing: -0.5px;">Family Visits &amp; Activity</h1>
+        <p style="font-size: 1.05rem; color: var(--color-text-muted); margin: 0.25rem 0 0 0; font-weight: 600;">
+          Review all registered family members, helpers, and their system access permissions
+        </p>
+      </div>
+    </div>
+    <a href="/" class="btn btn-outline" style="border-radius: 50px; font-weight: 700; padding: 0.5rem 1.25rem; font-size: 0.9rem; border: 2px solid #000000; box-shadow: 2px 2px 0px #000000;">
+      &larr; Back to Dashboard
+    </a>
   </div>
 
-  <div style="background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; box-shadow: var(--shadow-sm); overflow-x: auto;">
+  <div style="background: #ffffff; border-radius: 14px; border: 2px solid #000000; padding: 2rem; box-shadow: var(--shadow-relief-md); overflow-x: auto;">
     <% if @guests.empty? %>
-      <p style="color: var(--color-text-muted); text-align: center; padding: 2rem 0; margin: 0;">No guests have been invited yet.</p>
+      <div style="text-align: center; color: #64748b; padding: 3rem 1rem; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 10px;">
+        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">👥</span>
+        <p style="margin: 0; font-weight: 700; font-size: 1rem; color: #000000;">No guests have been invited yet.</p>
+        <p style="margin: 0.25rem 0 0 0; font-size: 0.88rem;">Invite family members and helpers from the "Family &amp; Loved Ones" menu.</p>
+      </div>
     <% else %>
       <table style="width: 100%; border-collapse: collapse; text-align: left;">
         <thead>
-          <tr style="border-bottom: 2px solid var(--color-border);">
-            <th style="padding: 1rem 0.5rem; color: var(--color-text-main); font-weight: 600;">Guest Name</th>
-            <th style="padding: 1rem 0.5rem; color: var(--color-text-main); font-weight: 600;">Email</th>
-            <th style="padding: 1rem 0.5rem; color: var(--color-text-main); font-weight: 600;">Permissions</th>
-            <th style="padding: 1rem 0.5rem; color: var(--color-text-main); font-weight: 600;">Access Granted</th>
+          <tr style="border-bottom: 2px solid #000000;">
+            <th style="padding: 1rem 0.75rem; color: #000000; font-weight: 900; font-size: 0.95rem;">Guest Name</th>
+            <th style="padding: 1rem 0.75rem; color: #000000; font-weight: 900; font-size: 0.95rem;">Email</th>
+            <th style="padding: 1rem 0.75rem; color: #000000; font-weight: 900; font-size: 0.95rem;">Permissions</th>
+            <th style="padding: 1rem 0.75rem; color: #000000; font-weight: 900; font-size: 0.95rem;">Access Granted</th>
           </tr>
         </thead>
         <tbody>
           <% @guests.each do |guest| %>
-            <tr style="border-bottom: 1px solid var(--color-border);">
-              <td style="padding: 1rem 0.5rem; color: var(--color-text-main); font-weight: 500;"><%= guest.name %></td>
-              <td style="padding: 1rem 0.5rem; color: var(--color-text-muted);"><%= guest.email %></td>
-              <td style="padding: 1rem 0.5rem;">
-                <div style="display: flex; gap: 0.25rem; flex-wrap: wrap;">
-                  <% perms = [] %>
-                  <% perms << 'Post Photos' if guest.can_post_photos %>
-                  <% perms << 'Play Games' if guest.can_play_games %>
-                  <% perms << 'Read Journals' if guest.can_read_journals %>
-                  
-                  <% if perms.empty? %>
-                    <span style="color: var(--color-text-muted); font-style: italic;">None</span>
-                  <% else %>
-                    <span style="color: var(--color-text-main);"><%= perms.join(', ') %></span>
+            <tr style="border-bottom: 1.5px solid #e2e8f0;">
+              <td style="padding: 1rem 0.75rem; color: #000000; font-weight: 800;"><%= guest.name %></td>
+              <td style="padding: 1rem 0.75rem; color: #475569; font-weight: 600;"><%= guest.email %></td>
+              <td style="padding: 1rem 0.75rem;">
+                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                  <% if guest.can_post_photos %>
+                    <span style="font-size: 0.75rem; font-weight: 800; background: #e0f2fe; color: #0369a1; border: 1px solid #000000; padding: 0.2rem 0.5rem; border-radius: 4px;">📸 Post Photos</span>
+                  <% end %>
+                  <% if guest.can_play_games %>
+                    <span style="font-size: 0.75rem; font-weight: 800; background: #ede9fe; color: #5b21b6; border: 1px solid #000000; padding: 0.2rem 0.5rem; border-radius: 4px;">🎲 Play Games</span>
+                  <% end %>
+                  <% if guest.can_read_journals %>
+                    <span style="font-size: 0.75rem; font-weight: 800; background: #fce7f3; color: #be185d; border: 1px solid #000000; padding: 0.2rem 0.5rem; border-radius: 4px;">📓 Read Journals</span>
+                  <% end %>
+                  <% unless guest.can_post_photos || guest.can_play_games || guest.can_read_journals %>
+                    <span style="color: #94a3b8; font-style: italic; font-weight: 600;">None</span>
                   <% end %>
                 </div>
               </td>
-              <td style="padding: 1rem 0.5rem; color: var(--color-text-muted);">
+              <td style="padding: 1rem 0.75rem; color: #64748b; font-weight: 700;">
                 <%= guest.created_at.strftime("%B %d, %Y") %>
               </td>
             </tr>
